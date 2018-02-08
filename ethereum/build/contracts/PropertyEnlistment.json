@@ -1,0 +1,1204 @@
+{
+  "contractName": "PropertyEnlistment",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "offers",
+      "outputs": [
+        {
+          "name": "amount",
+          "type": "int256"
+        },
+        {
+          "name": "tenantName",
+          "type": "string"
+        },
+        {
+          "name": "tenantEmail",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "landlordName",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "price",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_landlordName",
+          "type": "string"
+        },
+        {
+          "name": "_price",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "OfferReceived",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "amount",
+          "type": "int256"
+        },
+        {
+          "name": "tenantName",
+          "type": "string"
+        },
+        {
+          "name": "tenantEmail",
+          "type": "string"
+        }
+      ],
+      "name": "receiveOffer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfOffers",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6060604052341561000f57600080fd5b60405161086238038061086283398101604052808051820191906020018051906020019091905050816000908051906020019061004d92919061005c565b50806001819055505050610101565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061009d57805160ff19168380011785556100cb565b828001600101855582156100cb579182015b828111156100ca5782518255916020019190600101906100af565b5b5090506100d891906100dc565b5090565b6100fe91905b808211156100fa5760008160009055506001016100e2565b5090565b90565b610752806101106000396000f30060606040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680638a72ea6a146100725780639419bc29146101d0578063a035b1fe1461025e578063dd70afd214610287578063fae2544414610330575b600080fd5b341561007d57600080fd5b6100936004808035906020019091905050610359565b6040518085815260200180602001806020018460028111156100b157fe5b60ff16815260200183810383528681815460018160011615610100020316600290048152602001915080546001816001161561010002031660029004801561013a5780601f1061010f5761010080835404028352916020019161013a565b820191906000526020600020905b81548152906001019060200180831161011d57829003601f168201915b50508381038252858181546001816001161561010002031660029004815260200191508054600181600116156101000203166002900480156101bd5780601f10610192576101008083540402835291602001916101bd565b820191906000526020600020905b8154815290600101906020018083116101a057829003601f168201915b5050965050505050505060405180910390f35b34156101db57600080fd5b6101e36103a3565b6040518080602001828103825283818151815260200191508051906020019080838360005b83811015610223578082015181840152602081019050610208565b50505050905090810190601f1680156102505780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561026957600080fd5b610271610441565b6040518082815260200191505060405180910390f35b341561029257600080fd5b61032e600480803590602001909190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091905050610447565b005b341561033b57600080fd5b61034361054b565b6040518082815260200191505060405180910390f35b60028181548110151561036857fe5b9060005260206000209060040201600091509050806000015490806001019080600201908060030160009054906101000a900460ff16905084565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104395780601f1061040e57610100808354040283529160200191610439565b820191906000526020600020905b81548152906001019060200180831161041c57829003601f168201915b505050505081565b60015481565b61044f610558565b6080604051908101604052808581526020018481526020018381526020016000600281111561047a57fe5b8152509050600280548060010182816104939190610598565b916000526020600020906004020160008390919091506000820151816000015560208201518160010190805190602001906104cf9291906105ca565b5060408201518160020190805190602001906104ec9291906105ca565b5060608201518160030160006101000a81548160ff0219169083600281111561051157fe5b02179055505050507ff28a87171960d5ec8445fd295ed77f78a8ad4b1c4399e65135f30b6b1879aa3460405160405180910390a150505050565b6000600280549050905090565b6080604051908101604052806000815260200161057361064a565b815260200161058061064a565b81526020016000600281111561059257fe5b81525090565b8154818355818115116105c5576004028160040283600052602060002091820191016105c4919061065e565b5b505050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061060b57805160ff1916838001178555610639565b82800160010185558215610639579182015b8281111561063857825182559160200191906001019061061d565b5b50905061064691906106b9565b5090565b602060405190810160405280600081525090565b6106b691905b808211156106b25760008082016000905560018201600061068591906106de565b60028201600061069591906106de565b6003820160006101000a81549060ff021916905550600401610664565b5090565b90565b6106db91905b808211156106d75760008160009055506001016106bf565b5090565b90565b50805460018160011615610100020316600290046000825580601f106107045750610723565b601f01602090049060005260206000209081019061072291906106b9565b5b505600a165627a7a72305820d48139c42e2bcce70fb60f0b57c7451307d487f0ca82c65b0a182eb8e6bab1b30029",
+  "deployedBytecode": "0x60606040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680638a72ea6a146100725780639419bc29146101d0578063a035b1fe1461025e578063dd70afd214610287578063fae2544414610330575b600080fd5b341561007d57600080fd5b6100936004808035906020019091905050610359565b6040518085815260200180602001806020018460028111156100b157fe5b60ff16815260200183810383528681815460018160011615610100020316600290048152602001915080546001816001161561010002031660029004801561013a5780601f1061010f5761010080835404028352916020019161013a565b820191906000526020600020905b81548152906001019060200180831161011d57829003601f168201915b50508381038252858181546001816001161561010002031660029004815260200191508054600181600116156101000203166002900480156101bd5780601f10610192576101008083540402835291602001916101bd565b820191906000526020600020905b8154815290600101906020018083116101a057829003601f168201915b5050965050505050505060405180910390f35b34156101db57600080fd5b6101e36103a3565b6040518080602001828103825283818151815260200191508051906020019080838360005b83811015610223578082015181840152602081019050610208565b50505050905090810190601f1680156102505780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561026957600080fd5b610271610441565b6040518082815260200191505060405180910390f35b341561029257600080fd5b61032e600480803590602001909190803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803590602001908201803590602001908080601f01602080910402602001604051908101604052809392919081815260200183838082843782019150505050505091905050610447565b005b341561033b57600080fd5b61034361054b565b6040518082815260200191505060405180910390f35b60028181548110151561036857fe5b9060005260206000209060040201600091509050806000015490806001019080600201908060030160009054906101000a900460ff16905084565b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104395780601f1061040e57610100808354040283529160200191610439565b820191906000526020600020905b81548152906001019060200180831161041c57829003601f168201915b505050505081565b60015481565b61044f610558565b6080604051908101604052808581526020018481526020018381526020016000600281111561047a57fe5b8152509050600280548060010182816104939190610598565b916000526020600020906004020160008390919091506000820151816000015560208201518160010190805190602001906104cf9291906105ca565b5060408201518160020190805190602001906104ec9291906105ca565b5060608201518160030160006101000a81548160ff0219169083600281111561051157fe5b02179055505050507ff28a87171960d5ec8445fd295ed77f78a8ad4b1c4399e65135f30b6b1879aa3460405160405180910390a150505050565b6000600280549050905090565b6080604051908101604052806000815260200161057361064a565b815260200161058061064a565b81526020016000600281111561059257fe5b81525090565b8154818355818115116105c5576004028160040283600052602060002091820191016105c4919061065e565b5b505050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061060b57805160ff1916838001178555610639565b82800160010185558215610639579182015b8281111561063857825182559160200191906001019061061d565b5b50905061064691906106b9565b5090565b602060405190810160405280600081525090565b6106b691905b808211156106b25760008082016000905560018201600061068591906106de565b60028201600061069591906106de565b6003820160006101000a81549060ff021916905550600401610664565b5090565b90565b6106db91905b808211156106d75760008160009055506001016106bf565b5090565b90565b50805460018160011615610100020316600290046000825580601f106107045750610723565b601f01602090049060005260206000209081019061072291906106b9565b5b505600a165627a7a72305820d48139c42e2bcce70fb60f0b57c7451307d487f0ca82c65b0a182eb8e6bab1b30029",
+  "sourceMap": "26:739:0:-;;;321:128;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;411:13;396:12;:28;;;;;;;;;;;;:::i;:::-;;438:6;430:5;:14;;;;321:128;;26:739;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;",
+  "deployedSourceMap": "26:739:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;269:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;58:26;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;88:16:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;453:216;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;673:90;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;269:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;58:26::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;88:16::-;;;;:::o;453:216::-;539:13;;:::i;:::-;555:59;;;;;;;;;561:6;555:59;;;;569:10;555:59;;;;581:11;555:59;;;;594:19;555:59;;;;;;;;;;;539:75;;620:6;:22;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;632:9;620:22;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;649:15;;;;;;;;;;453:216;;;;:::o;673:90::-;722:3;744:6;:13;;;;733:25;;673:90;:::o;26:739::-;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o",
+  "source": "pragma solidity ^0.4.18;\n\ncontract PropertyEnlistment {\n  string public landlordName;\n  int public price;\n\n  enum OfferStatus { PENDING, ACCEPTED, REJECTED }\n  struct Offer {\n    int amount;\n    string tenantName;\n    string tenantEmail;\n    OfferStatus status;\n  }\n\n  Offer[] public offers;\n\n  event OfferReceived();\n\n  function PropertyEnlistment(string _landlordName, int _price) public {\n    landlordName = _landlordName;\n    price = _price;\n  }\n\n  function receiveOffer(int amount, string tenantName, string tenantEmail) public {\n    var lastOffer = Offer(amount, tenantName, tenantEmail, OfferStatus.PENDING);\n    offers.push(lastOffer);\n\n    OfferReceived();\n  }\n\n  function getNumberOfOffers() public view returns(int) {\n    return int(offers.length);\n  }\n}\n",
+  "sourcePath": "C:\\Users\\vkop\\Documents\\study\\master-thesis\\blockchain-real-estate-v1\\ethereum\\contracts\\PropertyEnlistment.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/C/Users/vkop/Documents/study/master-thesis/blockchain-real-estate-v1/ethereum/contracts/PropertyEnlistment.sol",
+      "exportedSymbols": {
+        "PropertyEnlistment": [
+          79
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".18"
+          ]
+        },
+        "id": 1,
+        "name": "PragmaDirective",
+        "src": "0:24:0"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            79
+          ],
+          "name": "PropertyEnlistment",
+          "scope": 80
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "name": "landlordName",
+              "scope": 79,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "string storage ref",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "string",
+                  "type": "string storage pointer"
+                },
+                "id": 2,
+                "name": "ElementaryTypeName",
+                "src": "58:6:0"
+              }
+            ],
+            "id": 3,
+            "name": "VariableDeclaration",
+            "src": "58:26:0"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "price",
+              "scope": 79,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "int256",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "int",
+                  "type": "int256"
+                },
+                "id": 4,
+                "name": "ElementaryTypeName",
+                "src": "88:3:0"
+              }
+            ],
+            "id": 5,
+            "name": "VariableDeclaration",
+            "src": "88:16:0"
+          },
+          {
+            "attributes": {
+              "canonicalName": "PropertyEnlistment.OfferStatus",
+              "name": "OfferStatus"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "PENDING"
+                },
+                "id": 6,
+                "name": "EnumValue",
+                "src": "128:7:0"
+              },
+              {
+                "attributes": {
+                  "name": "ACCEPTED"
+                },
+                "id": 7,
+                "name": "EnumValue",
+                "src": "137:8:0"
+              },
+              {
+                "attributes": {
+                  "name": "REJECTED"
+                },
+                "id": 8,
+                "name": "EnumValue",
+                "src": "147:8:0"
+              }
+            ],
+            "id": 9,
+            "name": "EnumDefinition",
+            "src": "109:48:0"
+          },
+          {
+            "attributes": {
+              "canonicalName": "PropertyEnlistment.Offer",
+              "name": "Offer",
+              "scope": 79,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "amount",
+                  "scope": 18,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "int256",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "int",
+                      "type": "int256"
+                    },
+                    "id": 10,
+                    "name": "ElementaryTypeName",
+                    "src": "179:3:0"
+                  }
+                ],
+                "id": 11,
+                "name": "VariableDeclaration",
+                "src": "179:10:0"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "tenantName",
+                  "scope": 18,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "string storage pointer",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "string",
+                      "type": "string storage pointer"
+                    },
+                    "id": 12,
+                    "name": "ElementaryTypeName",
+                    "src": "195:6:0"
+                  }
+                ],
+                "id": 13,
+                "name": "VariableDeclaration",
+                "src": "195:17:0"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "tenantEmail",
+                  "scope": 18,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "string storage pointer",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "string",
+                      "type": "string storage pointer"
+                    },
+                    "id": 14,
+                    "name": "ElementaryTypeName",
+                    "src": "218:6:0"
+                  }
+                ],
+                "id": 15,
+                "name": "VariableDeclaration",
+                "src": "218:18:0"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "status",
+                  "scope": 18,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "enum PropertyEnlistment.OfferStatus",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "contractScope": null,
+                      "name": "OfferStatus",
+                      "referencedDeclaration": 9,
+                      "type": "enum PropertyEnlistment.OfferStatus"
+                    },
+                    "id": 16,
+                    "name": "UserDefinedTypeName",
+                    "src": "242:11:0"
+                  }
+                ],
+                "id": 17,
+                "name": "VariableDeclaration",
+                "src": "242:18:0"
+              }
+            ],
+            "id": 18,
+            "name": "StructDefinition",
+            "src": "160:105:0"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "offers",
+              "scope": 79,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "struct PropertyEnlistment.Offer storage ref[] storage ref",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "length": null,
+                  "type": "struct PropertyEnlistment.Offer storage ref[] storage pointer"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "contractScope": null,
+                      "name": "Offer",
+                      "referencedDeclaration": 18,
+                      "type": "struct PropertyEnlistment.Offer storage pointer"
+                    },
+                    "id": 19,
+                    "name": "UserDefinedTypeName",
+                    "src": "269:5:0"
+                  }
+                ],
+                "id": 20,
+                "name": "ArrayTypeName",
+                "src": "269:7:0"
+              }
+            ],
+            "id": 21,
+            "name": "VariableDeclaration",
+            "src": "269:21:0"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "name": "OfferReceived"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 22,
+                "name": "ParameterList",
+                "src": "314:2:0"
+              }
+            ],
+            "id": 23,
+            "name": "EventDefinition",
+            "src": "295:22:0"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": true,
+              "modifiers": [
+                null
+              ],
+              "name": "PropertyEnlistment",
+              "payable": false,
+              "scope": 79,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_landlordName",
+                      "scope": 39,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 24,
+                        "name": "ElementaryTypeName",
+                        "src": "349:6:0"
+                      }
+                    ],
+                    "id": 25,
+                    "name": "VariableDeclaration",
+                    "src": "349:20:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "_price",
+                      "scope": 39,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "int256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "int",
+                          "type": "int256"
+                        },
+                        "id": 26,
+                        "name": "ElementaryTypeName",
+                        "src": "371:3:0"
+                      }
+                    ],
+                    "id": 27,
+                    "name": "VariableDeclaration",
+                    "src": "371:10:0"
+                  }
+                ],
+                "id": 28,
+                "name": "ParameterList",
+                "src": "348:34:0"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 29,
+                "name": "ParameterList",
+                "src": "390:0:0"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "string storage ref"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 3,
+                              "type": "string storage ref",
+                              "value": "landlordName"
+                            },
+                            "id": 30,
+                            "name": "Identifier",
+                            "src": "396:12:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 25,
+                              "type": "string memory",
+                              "value": "_landlordName"
+                            },
+                            "id": 31,
+                            "name": "Identifier",
+                            "src": "411:13:0"
+                          }
+                        ],
+                        "id": 32,
+                        "name": "Assignment",
+                        "src": "396:28:0"
+                      }
+                    ],
+                    "id": 33,
+                    "name": "ExpressionStatement",
+                    "src": "396:28:0"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "int256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 5,
+                              "type": "int256",
+                              "value": "price"
+                            },
+                            "id": 34,
+                            "name": "Identifier",
+                            "src": "430:5:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 27,
+                              "type": "int256",
+                              "value": "_price"
+                            },
+                            "id": 35,
+                            "name": "Identifier",
+                            "src": "438:6:0"
+                          }
+                        ],
+                        "id": 36,
+                        "name": "Assignment",
+                        "src": "430:14:0"
+                      }
+                    ],
+                    "id": 37,
+                    "name": "ExpressionStatement",
+                    "src": "430:14:0"
+                  }
+                ],
+                "id": 38,
+                "name": "Block",
+                "src": "390:59:0"
+              }
+            ],
+            "id": 39,
+            "name": "FunctionDefinition",
+            "src": "321:128:0"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "receiveOffer",
+              "payable": false,
+              "scope": 79,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "amount",
+                      "scope": 67,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "int256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "int",
+                          "type": "int256"
+                        },
+                        "id": 40,
+                        "name": "ElementaryTypeName",
+                        "src": "475:3:0"
+                      }
+                    ],
+                    "id": 41,
+                    "name": "VariableDeclaration",
+                    "src": "475:10:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "tenantName",
+                      "scope": 67,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 42,
+                        "name": "ElementaryTypeName",
+                        "src": "487:6:0"
+                      }
+                    ],
+                    "id": 43,
+                    "name": "VariableDeclaration",
+                    "src": "487:17:0"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "tenantEmail",
+                      "scope": 67,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 44,
+                        "name": "ElementaryTypeName",
+                        "src": "506:6:0"
+                      }
+                    ],
+                    "id": 45,
+                    "name": "VariableDeclaration",
+                    "src": "506:18:0"
+                  }
+                ],
+                "id": 46,
+                "name": "ParameterList",
+                "src": "474:51:0"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 47,
+                "name": "ParameterList",
+                "src": "533:0:0"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "assignments": [
+                        48
+                      ]
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "constant": false,
+                          "name": "lastOffer",
+                          "scope": 67,
+                          "stateVariable": false,
+                          "storageLocation": "default",
+                          "type": "struct PropertyEnlistment.Offer memory",
+                          "typeName": null,
+                          "value": null,
+                          "visibility": "internal"
+                        },
+                        "children": [],
+                        "id": 48,
+                        "name": "VariableDeclaration",
+                        "src": "539:13:0"
+                      },
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": true,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "struct PropertyEnlistment.Offer memory",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_int256",
+                                  "typeString": "int256"
+                                },
+                                {
+                                  "typeIdentifier": "t_string_memory_ptr",
+                                  "typeString": "string memory"
+                                },
+                                {
+                                  "typeIdentifier": "t_string_memory_ptr",
+                                  "typeString": "string memory"
+                                },
+                                {
+                                  "typeIdentifier": "t_enum$_OfferStatus_$9",
+                                  "typeString": "enum PropertyEnlistment.OfferStatus"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 18,
+                              "type": "type(struct PropertyEnlistment.Offer storage pointer)",
+                              "value": "Offer"
+                            },
+                            "id": 49,
+                            "name": "Identifier",
+                            "src": "555:5:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 41,
+                              "type": "int256",
+                              "value": "amount"
+                            },
+                            "id": 50,
+                            "name": "Identifier",
+                            "src": "561:6:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 43,
+                              "type": "string memory",
+                              "value": "tenantName"
+                            },
+                            "id": 51,
+                            "name": "Identifier",
+                            "src": "569:10:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 45,
+                              "type": "string memory",
+                              "value": "tenantEmail"
+                            },
+                            "id": 52,
+                            "name": "Identifier",
+                            "src": "581:11:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "member_name": "PENDING",
+                              "referencedDeclaration": null,
+                              "type": "enum PropertyEnlistment.OfferStatus"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 9,
+                                  "type": "type(enum PropertyEnlistment.OfferStatus)",
+                                  "value": "OfferStatus"
+                                },
+                                "id": 53,
+                                "name": "Identifier",
+                                "src": "594:11:0"
+                              }
+                            ],
+                            "id": 54,
+                            "name": "MemberAccess",
+                            "src": "594:19:0"
+                          }
+                        ],
+                        "id": 55,
+                        "name": "FunctionCall",
+                        "src": "555:59:0"
+                      }
+                    ],
+                    "id": 56,
+                    "name": "VariableDeclarationStatement",
+                    "src": "539:75:0"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "uint256",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_struct$_Offer_$18_memory_ptr",
+                                  "typeString": "struct PropertyEnlistment.Offer memory"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "push",
+                              "referencedDeclaration": null,
+                              "type": "function (struct PropertyEnlistment.Offer storage ref) returns (uint256)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 21,
+                                  "type": "struct PropertyEnlistment.Offer storage ref[] storage ref",
+                                  "value": "offers"
+                                },
+                                "id": 57,
+                                "name": "Identifier",
+                                "src": "620:6:0"
+                              }
+                            ],
+                            "id": 59,
+                            "name": "MemberAccess",
+                            "src": "620:11:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 48,
+                              "type": "struct PropertyEnlistment.Offer memory",
+                              "value": "lastOffer"
+                            },
+                            "id": 60,
+                            "name": "Identifier",
+                            "src": "632:9:0"
+                          }
+                        ],
+                        "id": 61,
+                        "name": "FunctionCall",
+                        "src": "620:22:0"
+                      }
+                    ],
+                    "id": 62,
+                    "name": "ExpressionStatement",
+                    "src": "620:22:0"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            null
+                          ],
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                null
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 23,
+                              "type": "function ()",
+                              "value": "OfferReceived"
+                            },
+                            "id": 63,
+                            "name": "Identifier",
+                            "src": "649:13:0"
+                          }
+                        ],
+                        "id": 64,
+                        "name": "FunctionCall",
+                        "src": "649:15:0"
+                      }
+                    ],
+                    "id": 65,
+                    "name": "ExpressionStatement",
+                    "src": "649:15:0"
+                  }
+                ],
+                "id": 66,
+                "name": "Block",
+                "src": "533:136:0"
+              }
+            ],
+            "id": 67,
+            "name": "FunctionDefinition",
+            "src": "453:216:0"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getNumberOfOffers",
+              "payable": false,
+              "scope": 79,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 68,
+                "name": "ParameterList",
+                "src": "699:2:0"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 78,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "int256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "int",
+                          "type": "int256"
+                        },
+                        "id": 69,
+                        "name": "ElementaryTypeName",
+                        "src": "722:3:0"
+                      }
+                    ],
+                    "id": 70,
+                    "name": "VariableDeclaration",
+                    "src": "722:3:0"
+                  }
+                ],
+                "id": 71,
+                "name": "ParameterList",
+                "src": "721:5:0"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 71
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "int256",
+                          "type_conversion": true
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "type": "type(int256)",
+                              "value": "int"
+                            },
+                            "id": 72,
+                            "name": "ElementaryTypeNameExpression",
+                            "src": "740:3:0"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "length",
+                              "referencedDeclaration": null,
+                              "type": "uint256"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 21,
+                                  "type": "struct PropertyEnlistment.Offer storage ref[] storage ref",
+                                  "value": "offers"
+                                },
+                                "id": 73,
+                                "name": "Identifier",
+                                "src": "744:6:0"
+                              }
+                            ],
+                            "id": 74,
+                            "name": "MemberAccess",
+                            "src": "744:13:0"
+                          }
+                        ],
+                        "id": 75,
+                        "name": "FunctionCall",
+                        "src": "740:18:0"
+                      }
+                    ],
+                    "id": 76,
+                    "name": "Return",
+                    "src": "733:25:0"
+                  }
+                ],
+                "id": 77,
+                "name": "Block",
+                "src": "727:36:0"
+              }
+            ],
+            "id": 78,
+            "name": "FunctionDefinition",
+            "src": "673:90:0"
+          }
+        ],
+        "id": 79,
+        "name": "ContractDefinition",
+        "src": "26:739:0"
+      }
+    ],
+    "id": 80,
+    "name": "SourceUnit",
+    "src": "0:766:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2018-02-06T20:00:23.243Z"
+}

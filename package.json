@@ -1,0 +1,40 @@
+{
+  "name": "blockchain-real-estate-v1",
+  "version": "0.0.1",
+  "description": "POC of real-estate app with blockchain parts",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "eslint api/ server/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.5",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "sequelize": "^4.32.6",
+    "truffle-contract": "^3.0.3",
+    "web3": "^0.20.4",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-node": "^5.2.1",
+    "ganache-cli": "^6.0.3"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "real-estate",
+    "smart contracts"
+  ],
+  "author": "Vladyslav Kopylash",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
