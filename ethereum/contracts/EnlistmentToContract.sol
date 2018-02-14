@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.18;
 contract EnlistmentToContract {
     
     // instanciated after the enlistment is approved by admins
@@ -157,13 +157,16 @@ contract EnlistmentToContract {
             draftNotPresentOrRejected(tenantEmail)
                 {
                 var amount = tenantOfferMap[tenantEmail].amount;
-                var agreementDraft = AgreementDraft(landlordName, 
+                tenantAgreementMap[tenantEmail] = AgreementDraft(landlordName, 
                     agreementTenantName, agreementTenantEmail,
                     amount, leaseStart, 
                     handoverDate, leasePeriod,
-                    otherTerms, hash, "", "", AgreementStatus.PENDING);
-                tenantAgreementMap[tenantEmail] = agreementDraft; // CompilerError: stack too deep, try removing local variables. Error only appears in local development, all good with browser one (remix.ethereum.org)
-                AgreementReceived(agreementDraft);
+                    otherTerms, hash, "", "", AgreementStatus.PENDING); // CompilerError: stack too deep, try removing local variables. Error only appears in local development, all good with browser one (remix.ethereum.org)
+                AgreementReceived(AgreementDraft(landlordName, 
+                    agreementTenantName, agreementTenantEmail,
+                    amount, leaseStart, 
+                    handoverDate, leasePeriod,
+                    otherTerms, hash, "", "", AgreementStatus.PENDING));
     }
         
     // getAgreement functions:
