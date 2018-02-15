@@ -40,7 +40,7 @@ module.exports = {
     });
 
     app.use((error, req, res, next) => {
-      log.error('Error middleware', error);
+      log.error(error);
       res.status(500).send(error.message);
     });
   }
