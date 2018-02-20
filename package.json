@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "start:eth": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\"",
     "lint": "eslint api/ server/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,9 +14,11 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "lodash": "^4.17.5",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "sequelize": "^4.32.6",
+    "sequelize": "^4.33.4",
     "truffle-contract": "^3.0.3",
     "web3": "^0.20.4",
     "winston": "^2.4.0"

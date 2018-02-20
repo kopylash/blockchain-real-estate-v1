@@ -1,7 +1,9 @@
 'use strict';
 
-// placeholder for models
-
 module.exports = (sequelize) => {
-  return {};
+  sequelize.sync();
+
+  return {
+    PropertyEnlistment: sequelize.import('PropertyEnlistment')
+  };
 };

@@ -3,6 +3,9 @@
     "node": true,
     "es6": true
   },
+  "globals": {
+    "Models": true
+  },
   "extends": [
     "eslint:recommended",
     "google",
