@@ -18,47 +18,33 @@ PropertyEnlistmentContract.defaults({
 
 });
 
-// In-memory storage for mapping id => contract address
-const store = {};
-
 module.exports = {
   createEnlistment({landlordName, streetName, floor, apartment, house, zipCode}) {
     return PropertyEnlistmentContract.new(landlordName, streetName, floor, apartment, house, zipCode).then(contract => {
-      log.info(`Enlistment created on address: ${contract.address}`);
+      log.info(`PropertyEnlistment smart contract created on address: ${contract.address}`);
 
-      const enlistmentId = Math.random().toString(36).substring(2);
-      store[enlistmentId] = contract.address;
-
-      return enlistmentId;
+      return contract.address;
     });
   },
 
-  sendOffer(enlistmentId, {amount, tenantName, tenantEmail}) {
-    const contractAddress = store[enlistmentId];
-
+  sendOffer(contractAddress, {amount, tenantName, tenantEmail}) {
     // https://github.com/trufflesuite/truffle-contract#usage
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.sendOffer(amount, tenantName, tenantEmail));
   },
 
-  getOffer(enlistmentId, tenantEmail) {
-    const contractAddress = store[enlistmentId];
-
+  getOffer(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.getOffer.call(tenantEmail))
     // TODO: convert BigNumber
       .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, status}));
   },
 
-  reviewOffer(enlistmentId, tenantEmail, approved = true) {
-    const contractAddress = store[enlistmentId];
-
+  reviewOffer(contractAddress, tenantEmail, approved = true) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.reviewOffer(approved, tenantEmail));
   },
 
-  submitAgreementDraft(enlistmentId, {
+  submitAgreementDraft(contractAddress, {
     tenantEmail, landlordName, agreementTenantName, agreementTenantEmail, leaseStart, handoverDate, leasePeriod, otherTerms, hash
   }) {
-    const contractAddress = store[enlistmentId];
-
     return PropertyEnlistmentContract.at(contractAddress).then(contract => {
       return contract.submitDraft(
         tenantEmail,
@@ -74,9 +60,7 @@ module.exports = {
     });
   },
 
-  getAgreement(enlistmentId, tenantEmail) {
-    const contractAddress = store[enlistmentId];
-
+  getAgreement(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => {
       return Promise.all([
         contract.getAgreementParticipants.call(tenantEmail),
@@ -107,27 +91,19 @@ module.exports = {
     });
   },
 
-  reviewAgreement(enlistmentId, tenantEmail, confirmed = true) {
-    const contractAddress = store[enlistmentId];
-
+  reviewAgreement(contractAddress, tenantEmail, confirmed = true) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.reviewAgreement(tenantEmail, confirmed));
   },
 
-  landlordSignAgreement(enlistmentId, tenantEmail, signatureHash) {
-    const contractAddress = store[enlistmentId];
-
+  landlordSignAgreement(contractAddress, tenantEmail, signatureHash) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.landlordSignAgreement(tenantEmail, signatureHash));
   },
 
-  tenantSignAgreement(enlistmentId, tenantEmail, signatureHash) {
-    const contractAddress = store[enlistmentId];
-
+  tenantSignAgreement(contractAddress, tenantEmail, signatureHash) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.tenantSignAgreement(tenantEmail, signatureHash));
   },
 
-  receiveFirstMonthRent(enlistmentId, tenantEmail) {
-    const contractAddress = store[enlistmentId];
-
+  receiveFirstMonthRent(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.receiveFirstMonthRent(tenantEmail));
   }
 };
