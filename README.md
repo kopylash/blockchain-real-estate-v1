@@ -41,8 +41,10 @@ npm install
 Before starting the app start local ethereum blockchain with Ganache. 
 For this either open Ganache app or run ganache-cli.
 
+NOTE: please use next mnemonic, as for development purposes some configs are predefined.
+
 ```
-ganache-cli
+ganache-cli -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat"
 ```
 
 Compile smart contracts.
