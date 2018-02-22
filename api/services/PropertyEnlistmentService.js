@@ -4,7 +4,16 @@ const PropertyEnlistmentContractService = require('./PropertyEnlistmentContractS
 
 module.exports = {
   createEnlistment(enlistment) {
+    enlistment.geolocation = {
+      type: 'Point',
+      coordinates: [enlistment.latitude, enlistment.longitude]
+    };
+
     return Models.PropertyEnlistment.create(enlistment);
+  },
+
+  findInArea(latitude, longitude, distance = 5000) {
+    return Models.PropertyEnlistment.findInArea(latitude, longitude, distance);
   },
 
   async approveEnlistment(enlistmentId) {
