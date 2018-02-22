@@ -4,6 +4,16 @@ module.exports = {
     action: 'createEnlistment'
   },
 
+  'POST /enlistments/:id/approve': {
+    controller: 'PropertyEnlistmentController',
+    action: 'approveEnlistment'
+  },
+
+  'POST /enlistments/:id/reject': {
+    controller: 'PropertyEnlistmentController',
+    action: 'rejectEnlistment'
+  },
+
   'POST /enlistments/:id/offers': {
     controller: 'PropertyEnlistmentController',
     action: 'sendOffer'

@@ -19,7 +19,7 @@ PropertyEnlistmentContract.defaults({
 });
 
 module.exports = {
-  createEnlistment({landlordName, streetName, floor, apartment, house, zipCode}) {
+  createEnlistment(landlordName, streetName, floor, apartment, house, zipCode) {
     return PropertyEnlistmentContract.new(landlordName, streetName, floor, apartment, house, zipCode).then(contract => {
       log.info(`PropertyEnlistment smart contract created on address: ${contract.address}`);
 

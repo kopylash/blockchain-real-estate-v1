@@ -10,6 +10,18 @@ module.exports = {
     res.status(201).json(enlistment);
   },
 
+  async approveEnlistment(req, res) {
+    await PropertyEnlistmentService.approveEnlistment(req.params.id);
+
+    res.status(200).send();
+  },
+
+  async rejectEnlistment(req, res) {
+    await PropertyEnlistmentService.rejectEnlistment(req.params.id);
+
+    res.status(200).send();
+  },
+
   async sendOffer(req, res) {
     await PropertyEnlistmentService.sendOffer(req.params.id, req.body);
 

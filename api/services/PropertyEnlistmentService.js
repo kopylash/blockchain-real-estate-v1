@@ -3,11 +3,33 @@
 const PropertyEnlistmentContractService = require('./PropertyEnlistmentContractService');
 
 module.exports = {
-  async createEnlistment(enlistment) {
-    const createdEnlistment = await Models.PropertyEnlistment.create(enlistment);
-    createdEnlistment.contractAddress = await PropertyEnlistmentContractService.createEnlistment(enlistment);
+  createEnlistment(enlistment) {
+    return Models.PropertyEnlistment.create(enlistment);
+  },
 
-    return createdEnlistment.save();
+  async approveEnlistment(enlistmentId) {
+    const enlistment = await Models.PropertyEnlistment.findOne({where: {id: enlistmentId}});
+
+    enlistment.approve();
+
+    enlistment.contractAddress = await PropertyEnlistmentContractService.createEnlistment(
+      enlistment.landlordName,
+      enlistment.streetName,
+      enlistment.floor,
+      enlistment.apartment,
+      enlistment.house,
+      enlistment.zipCode
+    );
+
+    return enlistment.save();
+  },
+
+  async rejectEnlistment(enlistmentId) {
+    const enlistment = await Models.PropertyEnlistment.findOne({where: {id: enlistmentId}});
+
+    enlistment.reject();
+
+    return enlistment.save();
   },
 
   async sendOffer(enlistmentId, {amount, tenantName, tenantEmail}) {
