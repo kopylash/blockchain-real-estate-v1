@@ -7,11 +7,15 @@ module.exports = {
   async createEnlistment(req, res) {
     const enlistment = await PropertyEnlistmentService.createEnlistment(req.body);
 
+    log.info(`Enlistment created`);
+
     res.status(201).json(enlistment);
   },
 
   async approveEnlistment(req, res) {
     await PropertyEnlistmentService.approveEnlistment(req.params.id);
+
+    log.info(`Enlistment with id: ${req.params.id} approved`);
 
     res.status(200).send();
   },
@@ -19,26 +23,8 @@ module.exports = {
   async rejectEnlistment(req, res) {
     await PropertyEnlistmentService.rejectEnlistment(req.params.id);
 
-    res.status(200).send();
-  },
+    log.info(`Enlistment with id: ${req.params.id} rejected`);
 
-  async sendOffer(req, res) {
-    await PropertyEnlistmentService.sendOffer(req.params.id, req.body);
-
-    log.info('Offer received');
-    res.status(201).send();
-  },
-
-  async getOffer(req, res) {
-    const offer = await PropertyEnlistmentService.getOffer(req.params.id, req.query.tenantEmail);
-
-    res.json(offer);
-  },
-
-  async reviewOffer(req, res) {
-    await PropertyEnlistmentService.reviewOffer(req.params.id, req.body.tenantEmail, req.body.approved);
-
-    log.info(`Offer reviewed with resolution ${req.body.approved}`);
     res.status(200).send();
   },
 

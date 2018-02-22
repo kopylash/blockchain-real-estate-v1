@@ -15,17 +15,17 @@ module.exports = {
   },
 
   'POST /enlistments/:id/offers': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'OfferController',
     action: 'sendOffer'
   },
 
   'GET /enlistments/:id/offers': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'OfferController',
     action: 'getOffer'
   },
 
   'POST /enlistments/:id/offers/review': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'OfferController',
     action: 'reviewOffer'
   },
 
