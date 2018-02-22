@@ -30,27 +30,27 @@ module.exports = {
   },
 
   'POST /enlistments/:id/agreements': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'submitAgreementDraft'
   },
 
   'GET /enlistments/:id/agreements': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'getAgreement'
   },
 
   'POST /enlistments/:id/agreements/review': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'reviewAgreement'
   },
 
   'POST /enlistments/:id/agreements/sign': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'signAgreement'
   },
 
   'POST /enlistments/:id/payments': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'receiveFirstMonthRent'
   },
 };
