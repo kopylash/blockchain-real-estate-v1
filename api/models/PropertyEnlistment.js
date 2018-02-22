@@ -1,9 +1,10 @@
 'use strict';
 
 const DataTypes = require('sequelize/lib/data-types');
+const Status = require('./enums/PropertyEnlistmentStatus');
 
 module.exports = (sequelize) => {
-  return sequelize.define('property_enlistments', {
+  const PropertyEnlistment = sequelize.define('property_enlistments', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -34,8 +35,23 @@ module.exports = (sequelize) => {
     },
     contractAddress: {
       type: DataTypes.STRING
+    },
+    status: {
+      type: DataTypes.ENUM,
+      values: [Status.PENDING, Status.APPROVED, Status.REJECTED, Status.CANCELLED],
+      defaultValue: Status.PENDING
     }
   }, {
     freezeTableName: true
   });
+
+  PropertyEnlistment.prototype.approve = function() {
+    this.status = Status.APPROVED;
+  };
+
+  PropertyEnlistment.prototype.reject = function() {
+    this.status = Status.REJECTED;
+  };
+
+  return PropertyEnlistment;
 };

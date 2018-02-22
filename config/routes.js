@@ -4,43 +4,53 @@ module.exports = {
     action: 'createEnlistment'
   },
 
-  'POST /enlistments/:id/offers': {
+  'POST /enlistments/:id/approve': {
     controller: 'PropertyEnlistmentController',
+    action: 'approveEnlistment'
+  },
+
+  'POST /enlistments/:id/reject': {
+    controller: 'PropertyEnlistmentController',
+    action: 'rejectEnlistment'
+  },
+
+  'POST /enlistments/:id/offers': {
+    controller: 'OfferController',
     action: 'sendOffer'
   },
 
   'GET /enlistments/:id/offers': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'OfferController',
     action: 'getOffer'
   },
 
   'POST /enlistments/:id/offers/review': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'OfferController',
     action: 'reviewOffer'
   },
 
   'POST /enlistments/:id/agreements': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'submitAgreementDraft'
   },
 
   'GET /enlistments/:id/agreements': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'getAgreement'
   },
 
   'POST /enlistments/:id/agreements/review': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'reviewAgreement'
   },
 
   'POST /enlistments/:id/agreements/sign': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'signAgreement'
   },
 
   'POST /enlistments/:id/payments': {
-    controller: 'PropertyEnlistmentController',
+    controller: 'AgreementContractController',
     action: 'receiveFirstMonthRent'
   },
 };

@@ -7,60 +7,24 @@ module.exports = {
   async createEnlistment(req, res) {
     const enlistment = await PropertyEnlistmentService.createEnlistment(req.body);
 
+    log.info(`Enlistment created`);
+
     res.status(201).json(enlistment);
   },
 
-  async sendOffer(req, res) {
-    await PropertyEnlistmentService.sendOffer(req.params.id, req.body);
+  async approveEnlistment(req, res) {
+    await PropertyEnlistmentService.approveEnlistment(req.params.id);
 
-    log.info('Offer received');
-    res.status(201).send();
-  },
+    log.info(`Enlistment with id: ${req.params.id} approved`);
 
-  async getOffer(req, res) {
-    const offer = await PropertyEnlistmentService.getOffer(req.params.id, req.query.tenantEmail);
-
-    res.json(offer);
-  },
-
-  async reviewOffer(req, res) {
-    await PropertyEnlistmentService.reviewOffer(req.params.id, req.body.tenantEmail, req.body.approved);
-
-    log.info(`Offer reviewed with resolution ${req.body.approved}`);
     res.status(200).send();
   },
 
-  async submitAgreementDraft(req, res) {
-    await PropertyEnlistmentService.submitAgreementDraft(req.params.id, req.body);
+  async rejectEnlistment(req, res) {
+    await PropertyEnlistmentService.rejectEnlistment(req.params.id);
 
-    log.info('Agreement draft submitted');
-    res.status(201).send();
-  },
+    log.info(`Enlistment with id: ${req.params.id} rejected`);
 
-  async getAgreement(req, res) {
-    const agreement = await PropertyEnlistmentService.getAgreement(req.params.id, req.query.tenantEmail);
-
-    res.json(agreement);
-  },
-
-  async reviewAgreement(req, res) {
-    await PropertyEnlistmentService.reviewAgreement(req.params.id, req.body.tenantEmail, req.body.confirmed);
-
-    log.info(`Agreement reviewed with resolution ${req.body.confirmed}`);
-    res.status(200).send();
-  },
-
-  async signAgreement(req, res) {
-    await PropertyEnlistmentService.signAgreement(req.params.id, req.body.tenantEmail, req.body.party, req.body.signatureHash);
-
-    log.info(`Agreement signed by ${req.body.party}`);
-    res.status(200).send();
-  },
-
-  async receiveFirstMonthRent(req, res) {
-    await PropertyEnlistmentService.receiveFirstMonthRent(req.params.id, req.body.tenantEmail);
-
-    log.info(`First month payment received`);
     res.status(200).send();
   }
 };
