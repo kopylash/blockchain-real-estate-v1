@@ -40,7 +40,8 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM,
       values: [Status.PENDING, Status.APPROVED, Status.REJECTED, Status.CANCELLED],
       defaultValue: Status.PENDING
-    }
+    },
+    geolocation: DataTypes.GEOMETRY('POINT') // eslint-disable-line new-cap
   }, {
     freezeTableName: true
   });
@@ -51,6 +52,26 @@ module.exports = (sequelize) => {
 
   PropertyEnlistment.prototype.reject = function() {
     this.status = Status.REJECTED;
+  };
+
+  PropertyEnlistment.findInArea = function(latitude, longitude, distance) {
+    const query = `
+    SELECT
+        *, ST_Distance_Sphere(ST_MakePoint(:latitude, :longitude), "geolocation") AS distance
+    FROM
+        "property_enlistments"
+    WHERE
+        ST_Distance_Sphere(ST_MakePoint(:latitude, :longitude), "geolocation") < :maxDistance
+    `;
+
+    return sequelize.query(query, {
+      replacements: {
+        latitude,
+        longitude,
+        maxDistance: distance
+      },
+      type: sequelize.QueryTypes.SELECT
+    });
   };
 
   return PropertyEnlistment;

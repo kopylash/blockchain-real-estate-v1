@@ -26,5 +26,16 @@ module.exports = {
     log.info(`Enlistment with id: ${req.params.id} rejected`);
 
     res.status(200).send();
+  },
+
+  async findInArea(req, res) {
+    if (!req.query.latitude || !req.query.longitude) {
+      throw new Error('Latitude and longitude are required');
+    }
+
+    const enlistments = await PropertyEnlistmentService.findInArea(
+      parseFloat(req.query.latitude), parseFloat(req.query.longitude), parseFloat(req.query.distance)) || [];
+
+    res.json(enlistments);
   }
 };
