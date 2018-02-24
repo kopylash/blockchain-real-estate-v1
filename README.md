@@ -36,13 +36,36 @@ Install dependencies
 npm install
 ```
 
+### Database
+We use [Sequelize](http://docs.sequelizejs.com/) for database manipulation.
+Project is preconfigured to use PostgreSQL.
+To connect to the database setup environmental variable **DATABASE_URL** in format:
+
+```
+DATABASE_URL = "postgres://<user>:<password>@<host>:<port>/<database_name>"
+```
+
+**IMPORTANT:** Postgres should have [POSTGIS](https://postgis.net/) extension installed.
+And you should enable it in your database by running:
+
+```sql
+CREATE EXTENSION POSTGIS;
+```
+
+Database is automatically synchronized with Models definition.
+
 ### Run
 
 Before starting the app start local ethereum blockchain with Ganache. 
-For this either open Ganache app or run ganache-cli.
+For this either open Ganache app or run:
 
 ```
-ganache-cli
+npm run start:eth
+```
+
+NOTE: we use next mnemonic for development purposes, some configs are predefined.
+```
+candy maple cake sugar pudding cream honey rich smooth crumble sweet treat
 ```
 
 Compile smart contracts.

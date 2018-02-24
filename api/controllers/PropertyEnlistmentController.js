@@ -1,70 +1,41 @@
 'use strict';
 
-const PropertyEnlistmentContractService = require('../services/PropertyEnlistmentContractService');
+const PropertyEnlistmentService = require('../services/PropertyEnlistmentService');
 const log = require('../../server/logger');
 
 module.exports = {
   async createEnlistment(req, res) {
-    const id = await PropertyEnlistmentContractService.createEnlistment(req.body);
+    const enlistment = await PropertyEnlistmentService.createEnlistment(req.body);
 
-    res.status(201).json({id});
+    log.info(`Enlistment created`);
+
+    res.status(201).json(enlistment);
   },
 
-  async sendOffer(req, res) {
-    await PropertyEnlistmentContractService.sendOffer(req.params.id, req.body);
+  async approveEnlistment(req, res) {
+    await PropertyEnlistmentService.approveEnlistment(req.params.id);
 
-    log.info('Offer received');
-    res.status(201).send();
-  },
+    log.info(`Enlistment with id: ${req.params.id} approved`);
 
-  async getOffer(req, res) {
-    const offer = await PropertyEnlistmentContractService.getOffer(req.params.id, req.query.tenantEmail);
-
-    res.json(offer);
-  },
-
-  async reviewOffer(req, res) {
-    await PropertyEnlistmentContractService.reviewOffer(req.params.id, req.body.tenantEmail, req.body.approved);
-
-    log.info(`Offer reviewed with resolution ${req.body.approved}`);
     res.status(200).send();
   },
 
-  async submitAgreementDraft(req, res) {
-    await PropertyEnlistmentContractService.submitAgreementDraft(req.params.id, req.body);
+  async rejectEnlistment(req, res) {
+    await PropertyEnlistmentService.rejectEnlistment(req.params.id);
 
-    log.info('Agreement draft submitted');
-    res.status(201).send();
-  },
+    log.info(`Enlistment with id: ${req.params.id} rejected`);
 
-  async getAgreement(req, res) {
-    const agreement = await PropertyEnlistmentContractService.getAgreement(req.params.id, req.query.tenantEmail);
-
-    res.json(agreement);
-  },
-
-  async reviewAgreement(req, res) {
-    await PropertyEnlistmentContractService.reviewAgreement(req.params.id, req.body.tenantEmail, req.body.confirmed);
-
-    log.info(`Agreement reviewed with resolution ${req.body.confirmed}`);
     res.status(200).send();
   },
 
-  async signAgreement(req, res) {
-    if (req.body.party === 'landlord') {
-      await PropertyEnlistmentContractService.landlordSignAgreement(req.params.id, req.body.tenantEmail, req.body.signatureHash);
-    } else {
-      await PropertyEnlistmentContractService.tenantSignAgreement(req.params.id, req.body.tenantEmail, req.body.signatureHash);
+  async findInArea(req, res) {
+    if (!req.query.latitude || !req.query.longitude) {
+      throw new Error('Latitude and longitude are required');
     }
 
-    log.info(`Agreement signed by ${req.body.party}`);
-    res.status(200).send();
-  },
+    const enlistments = await PropertyEnlistmentService.findInArea(
+      parseFloat(req.query.latitude), parseFloat(req.query.longitude), parseFloat(req.query.distance)) || [];
 
-  async receiveFirstMonthRent(req, res) {
-    await PropertyEnlistmentContractService.receiveFirstMonthRent(req.params.id, req.body.tenantEmail);
-
-    log.info(`First month payment received`);
-    res.status(200).send();
+    res.json(enlistments);
   }
 };
