@@ -129,9 +129,22 @@ contract EnlistmentToContract {
             status: OfferStatus.PENDING
         });
         tenantOfferMap[tenantEmail] = offer;
-        /* catch events in server and then only transmit them to the associated tenant? (+ always landlord) */
         OfferReceived(offer); // offer includes the email of the tenant to do event filtering
     }
+
+    function cancelOffer(string tenantEmail) payable public 
+        offerExists(tenantEmail)
+        offerInStatus(OfferStatus.PENDING, tenantEmail)
+        {
+            tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
+            var offer = tenantOfferMap[tenantEmail];
+                var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+                OfferUpdated(typed);
+    }
+
+
+
+
     
     function getOffer(string tenantEmail) view public returns (bool, int, string, string, OfferStatus) {
         var o = tenantOfferMap[tenantEmail];
