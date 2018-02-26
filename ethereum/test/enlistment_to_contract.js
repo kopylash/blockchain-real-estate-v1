@@ -293,6 +293,18 @@ contract('EnlistmentToContract', async ([owner]) => {
         await expectThrowMessage(instance.sendOffer(800, 'Gianna', 'gianna@never-reply.xd'), revertErrorMsg);
       });
 
+      it('should block signing of any other agreement until the enlistment is locked', async() => {
+        await instance.sendOffer(5000, 'Moriarty', 'morry@reply.xd');
+
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+
+        await instance.reviewOffer(true, 'morry@reply.xd');
+        await instance.submitDraft('morry@reply.xd', 'John Wick', 'Cassian', 'morry@reply.xd', 12, 15, 65, 'No cats', 'H4sh');
+        await instance.reviewAgreement('morry@reply.xd', true);
+
+        await expectThrowMessage(instance.landlordSignAgreement('morry@reply.xd', 'secondHash'));
+      });
+
       it('should sign the contract: tenant', async() => {
         await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
         await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
