@@ -145,6 +145,9 @@ contract EnlistmentToContract {
         offerCancellable(tenantEmail)
         {
             tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
+            if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
+                tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
+            }
             var offer = tenantOfferMap[tenantEmail];
                 var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
                 OfferUpdated(typed);
