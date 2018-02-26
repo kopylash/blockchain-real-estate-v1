@@ -149,11 +149,7 @@ contract('EnlistmentToContract', async ([owner]) => {
         bigNumberEqual(offer[4], offerStatusMap['PENDING']);
       });
 
-      it('should allow cancelling an offer for tenant until he has signed');
-
       it('should allow rejecting an offer for landlord until he has signed. In this case, process flow pauses where it is (agreement may be accepted), and waits for an offer to be sent and accepted again. Essentially, this resets the OfferToContract subprocess.');
-
-      it('should allow sending a new offer after the old one was cancelled');
 
     });
 
@@ -305,6 +301,59 @@ contract('EnlistmentToContract', async ([owner]) => {
       });
     });
 
+    describe('Cancelling an offer after the initial review loop', async() => {
+
+      let instance;
+
+      beforeEach('create an enlistment, send an offer, accept the offer, submit a draft, accept the draft, landlord sign, tenant sign', async () => {
+        instance = await ETC.new('john@wick.xd', 'Baker', 1, 2, 3, 45000);
+        await instance.sendOffer(400, 'Cassian', 'cassian@reply.xd');
+        await instance.reviewOffer(true, 'cassian@reply.xd');
+      });
+
+      const cancelOfferAndAssertStatus = (email) => {
+        await instance.cancelOffer('cassian@reply.xd');
+        offer = instance.getOffer('cassian@reply.xd');
+        bigNumberEqual(offer[4], offerStatusMap['CANCELLED']);
+      }
+
+      it('when its status is ACCEPTED and draft is yet to be issued', async() => {
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+
+      it('when the agreement is in review', async() => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+
+      it('when the agreement is rejected', async() => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        await instance.reviewAgreement('cassian@reply.xd', false);
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+
+      it('when the agreement is accepted and no signing has been done', async() => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+
+      it('after the agreement is accepted and landlord has signed it', async() => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+
+      it('should not allow cancelling the offer after the tenant has signed', async () => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
+        cancelOfferAndAssertStatus('cassian@reply.xd');
+      });
+    });
+
     describe('Collecting the first month rent', async () => {
       let instance;
 
@@ -326,6 +375,7 @@ contract('EnlistmentToContract', async ([owner]) => {
         bigNumberEqual(agreementStatusMap['COMPLETED'], agreementStatus);
       });
     });
+
 
   });
 
