@@ -86,6 +86,14 @@ contract EnlistmentToContract {
         require(tenantOfferMap[tenantEmail].status == status);
         _;
     }
+
+    modifier offerCancellable(string tenantEmail) {
+        var offerStatus = tenantOfferMap[tenantEmail].status;
+        require(offerStatus == OfferStatus.PENDING || offerStatus == OfferStatus.ACCEPTED);
+        var agreementStatus = tenantAgreementMap[tenantEmail].status;
+        require(!(agreementStatus == AgreementStatus.CANCELLED || agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED));
+        _;
+    }
     
     modifier draftNotPresentOrRejected(string tenantEmail) {
         require(tenantAgreementMap[tenantEmail].status == AgreementStatus.UNINITIALIZED || tenantAgreementMap[tenantEmail].status == AgreementStatus.REJECTED);
@@ -134,7 +142,7 @@ contract EnlistmentToContract {
 
     function cancelOffer(string tenantEmail) payable public 
         offerExists(tenantEmail)
-        offerInStatus(OfferStatus.PENDING, tenantEmail)
+        offerCancellable(tenantEmail)
         {
             tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
             var offer = tenantOfferMap[tenantEmail];
