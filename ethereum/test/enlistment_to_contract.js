@@ -130,7 +130,16 @@ contract('EnlistmentToContract', async ([owner]) => {
 
       it('should allow sending a new offer after the old one was rejected', async () => {
         await instance.reviewOffer(false, 'cassian@reply.xd');
-        await instance.sendOffer(450, 'Cassian', 'cassian@reply.xd'); // fails, needs fix
+        await instance.sendOffer(450, 'Cassian', 'cassian@reply.xd');
+        const offer = await instance.getOffer('cassian@reply.xd');
+        bigNumberEqual(offer[1], 450); // amount
+        bigNumberEqual(offer[4], offerStatusMap['PENDING']);
+      });
+
+      it('should cancel the offer', async () => {
+        await instance.cancelOffer('cassian@reply.xd');
+        const offer = await instance.getOffer('cassian@reply.xd');
+        bigNumberEqual(offer[4], offerStatusMap['CANCELLED']);
       });
 
       it('should allow cancelling an offer for tenant until he has signed. In this case, process flow pauses where it is (agreement may be accepted), and waits for an offer to be sent and accepted again. Essentially, this resets the OfferToContract subprocess.');
