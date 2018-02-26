@@ -73,7 +73,7 @@ contract EnlistmentToContract {
     }
     
     modifier noActiveOffer(string tenantEmail) {
-        require(tenantOfferMap[tenantEmail].initialized == false || tenantOfferMap[tenantEmail].status == OfferStatus.REJECTED);
+        require(tenantOfferMap[tenantEmail].initialized == false || tenantOfferMap[tenantEmail].status == OfferStatus.REJECTED || tenantOfferMap[tenantEmail].status == OfferStatus.CANCELLED);
         _;
     }
     
