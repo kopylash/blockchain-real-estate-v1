@@ -97,6 +97,11 @@ contract EnlistmentToContract {
         require(tenantAgreementMap[tenantEmail].status == status);
         _;
     }
+
+    modifier notLocked() {
+        require(!locked);
+        _;
+    }
     
     
     modifier maintainerOnly() {
@@ -121,6 +126,7 @@ contract EnlistmentToContract {
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
     noActiveOffer(tenantEmail)
+    notLocked()
         {
         var offer = Offer({
             initialized: true,
