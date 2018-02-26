@@ -61,6 +61,16 @@ module.exports = {
     return PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, tenantEmail);
   },
 
+  async cancelOffer(enlistmentId, tenantEmail) {
+    const enlistment = await Models.PropertyEnlistment.findOne({
+      where: {
+        id: enlistmentId
+      }
+    });
+
+    return PropertyEnlistmentContractService.cancelOffer(enlistment.contractAddress, tenantEmail);
+  },
+
   async reviewOffer(enlistmentId, tenantEmail, approved = true) {
     const enlistment = await Models.PropertyEnlistment.findOne({
       where: {
