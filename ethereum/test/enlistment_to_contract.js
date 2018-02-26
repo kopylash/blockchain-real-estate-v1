@@ -47,6 +47,11 @@ contract('EnlistmentToContract', async ([owner]) => {
       assert.equal(landlord, 'landlord@email.xd');
     });
 
+    it('should set locked property to false', async() => {
+      let isLocked = await contract.locked.call();
+      assert.isFalse(isLocked);
+    })
+
     it('should instanciate the enlistment', async () => {
       let enlistment = await contract.enlistment.call(); // returns an array which represents an enlistment struct
       assert.equal(enlistment[0], 'Waker');

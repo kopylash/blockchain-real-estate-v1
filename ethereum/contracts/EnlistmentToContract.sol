@@ -8,6 +8,7 @@ contract EnlistmentToContract {
     
     address owner;
     string public landlord;
+    bool public locked = false;
     Enlistment public enlistment;
     mapping(string => Offer) tenantOfferMap;
     mapping(string => AgreementDraft) tenantAgreementMap;
@@ -215,6 +216,7 @@ contract EnlistmentToContract {
         {
             tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
             tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
+            locked = true;
             var agreement = tenantAgreementMap[tenantEmail];
             var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
                 agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
