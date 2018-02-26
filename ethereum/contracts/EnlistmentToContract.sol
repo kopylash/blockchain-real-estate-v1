@@ -98,7 +98,7 @@ contract EnlistmentToContract {
     }
     
     
-    modifier AverspaceOnly() {
+    modifier maintainerOnly() {
         require(msg.sender == owner); 
         _;
     }

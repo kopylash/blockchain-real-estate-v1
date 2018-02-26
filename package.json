@@ -7,7 +7,7 @@
     "start": "node app.js",
     "start:eth": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\"",
     "lint": "eslint api/ server/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd ethereum && truffle test"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -27,7 +27,8 @@
     "eslint": "^4.13.1",
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-node": "^5.2.1",
-    "ganache-cli": "^6.0.3"
+    "ganache-cli": "^6.0.3",
+    "web3-utils": "^1.0.0-beta.30"
   },
   "keywords": [
     "blockchain",
