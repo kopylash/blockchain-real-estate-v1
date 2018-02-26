@@ -216,6 +216,7 @@ contract EnlistmentToContract {
     
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
+        notLocked()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.CONFIRMED, tenantEmail)
