@@ -277,6 +277,12 @@ contract('EnlistmentToContract', async ([owner]) => {
         assert.equal(agreementHashes[1], 'l4ndl0rdSignedDraftPDFH4sh');
       });
 
+      it('should set the locked property to "true" after the landlord signs', async() => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        const isLocked = await instance.locked.call();
+        assert.isTrue(isLocked);
+      });
+
       it('should sign the contract: tenant', async() => {
         await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
         await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
@@ -287,6 +293,7 @@ contract('EnlistmentToContract', async ([owner]) => {
         const agreementHashes = await instance.getAgreementHashes('cassian@reply.xd');
         assert.equal(agreementHashes[2], 't3n4ntSignedDraftPDFH4sh');
       });
+
     });
 
     describe('Collecting the first month rent', async () => {
