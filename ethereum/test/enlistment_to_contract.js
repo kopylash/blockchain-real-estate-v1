@@ -350,6 +350,16 @@ contract('EnlistmentToContract', async ([owner]) => {
         await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
         expectThrowMessage(cancelOfferAndAssertStatus(instance, 'cassian@reply.xd'), revertErrorMsg);
       });
+
+      it('when the offer is cancelled, it should also cancel the agreement if there is any', async() => {
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian', 'cassian@reply.xd', 1519580655493, 1519580355498, 65493, 'No cats, no wives', 'draftPDFH4sh');
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.cancelOffer(email);
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatus, agreementStatusMap['CANCELLED']);
+      });
+
     });
 
     describe('Collecting the first month rent', async () => {
