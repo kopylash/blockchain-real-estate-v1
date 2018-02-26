@@ -288,6 +288,11 @@ contract('EnlistmentToContract', async ([owner]) => {
         assert.isTrue(isLocked);
       });
 
+      it('should lock the enlistment for new offers after the landlord signs', async() => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await expectThrowMessage(instance.sendOffer(800, 'Gianna', 'gianna@never-reply.xd'), expectThrowMessage);
+      });
+
       it('should sign the contract: tenant', async() => {
         await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
         await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
