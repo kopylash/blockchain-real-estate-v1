@@ -31,6 +31,14 @@ module.exports = {
     res.status(200).send();
   },
 
+  async cancelAgreement(req, res) {
+    await PropertyEnlistmentService.cancelAgreement(req.params.id, req.body.tenantEmail);
+
+    log.info(`Agreement cancelled`);
+
+    res.status(200).send();
+  },
+
   async receiveFirstMonthRent(req, res) {
     await PropertyEnlistmentService.receiveFirstMonthRent(req.params.id, req.body.tenantEmail);
 

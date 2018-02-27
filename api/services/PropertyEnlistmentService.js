@@ -125,6 +125,16 @@ module.exports = {
     }
   },
 
+  async cancelAgreement(enlistmentId, tenantEmail) {
+    const enlistment = await Models.PropertyEnlistment.findOne({
+      where: {
+        id: enlistmentId
+      }
+    });
+
+    return PropertyEnlistmentContractService.cancelAgreement(enlistment.contractAddress, tenantEmail);
+  },
+
   async receiveFirstMonthRent(enlistmentId, tenantEmail) {
     const enlistment = await Models.PropertyEnlistment.findOne({
       where: {

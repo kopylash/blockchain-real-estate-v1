@@ -107,6 +107,10 @@ module.exports = {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.tenantSignAgreement(tenantEmail, signatureHash));
   },
 
+  cancelAgreement(contractAddress, tenantEmail) {
+    return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.cancelAgreement(tenantEmail));
+  },
+
   receiveFirstMonthRent(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.receiveFirstMonthRent(tenantEmail));
   }
