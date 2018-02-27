@@ -109,7 +109,7 @@ contract EnlistmentToContract {
 
     modifier agreementCancellable(string tenantEmail) {
         var agreementStatus = tenantAgreementMap[tenantEmail].status;
-        require(!(agreementStatus == AgreementStatus.CANCELLED || agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED));
+        require(!(agreementStatus == AgreementStatus.CANCELLED || agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED || agreementStatus == AgreementStatus.REJECTED));
         _;
     }
 
