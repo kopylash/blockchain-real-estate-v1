@@ -59,6 +59,11 @@ module.exports = {
     action: 'signAgreement'
   },
 
+  'POST /enlistments/:id/agreements/cancel': {
+    controller: 'AgreementContractController',
+    action: 'cancelAgreement'
+  },
+
   'POST /enlistments/:id/payments': {
     controller: 'AgreementContractController',
     action: 'receiveFirstMonthRent'

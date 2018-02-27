@@ -211,7 +211,7 @@ contract('EnlistmentToContract', async ([owner]) => {
           it('Multi-part requests: status', async() => {
             const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd'); // returns BigNumber integer, representing the associated enum
             bigNumberEqual(agreementStatusMap['PENDING'], agreementStatus);
-          })
+          });
         });
 
       });
@@ -263,12 +263,50 @@ contract('EnlistmentToContract', async ([owner]) => {
         assert.equal(agreementHashes[0], 'N3WdraftPDFH4sh');
       });
 
-      it('should allow withdrawing an agreement draft (for landlord) until he has signed it. in this case, process flow moves back to the place where the landlord is supposed to send a contract draft.');
+      it('should allow withdrawing an agreement draft when it\'s pending review', async() => {
+        await instance.cancelAgreement('cassian@reply.xd');
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['CANCELLED'], agreementStatus);
+      });
 
-      it('should allow rejecting an agreement draft (for tenant) until he has signed it. in this case, process flow moves back to the place where the landlord is supposed to send a contract draft');
+      it('should not allow withdrawing an agreement draft when it has been rejected', async() => {
+        await instance.reviewAgreement('cassian@reply.xd', false);
+        await expectThrowMessage(instance.cancelAgreement('cassian@reply.xd'), revertErrorMsg);
+      });
 
-      it('should allow sending a new draft after the old one was withdrawn');
+      it('should allow cancelling an agreement draft when it\'s confirmed',  async() => {
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.cancelAgreement('cassian@reply.xd');
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['CANCELLED'], agreementStatus);
+      });
 
+      it('should allow withdrawing an agreement draft when landlord has signed it', async () => {
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.cancelAgreement('cassian@reply.xd');
+
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['CANCELLED'], agreementStatus);
+      });
+
+      it('should allow sending a new draft after the old one was withdrawn', async () => {
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.cancelAgreement('cassian@reply.xd');
+
+        await instance.submitDraft('cassian@reply.xd', 'John Wick', 'Cassian2', 'cassian@reply.xd', 1519580655493, 1519580355498, 85493, 'No dogs', 'N3easdWdraftPDFH4sh');
+
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['PENDING'], agreementStatus);
+      });
+
+      it('should not allow cancelling an agreement if tenant has signed it', async () => {
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
+
+        expectThrowMessage(instance.cancelAgreement('cassian@reply.xd'), revertErrorMsg);
+      });
     });
 
     describe('Signing', async () => {
