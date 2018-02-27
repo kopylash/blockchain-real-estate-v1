@@ -73,7 +73,7 @@ contract EnlistmentToContract {
     }
     
     modifier noActiveOffer(string tenantEmail) {
-        require(tenantOfferMap[tenantEmail].initialized == false || tenantOfferMap[tenantEmail].status == OfferStatus.REJECTED);
+        require(tenantOfferMap[tenantEmail].initialized == false || tenantOfferMap[tenantEmail].status == OfferStatus.REJECTED || tenantOfferMap[tenantEmail].status == OfferStatus.CANCELLED);
         _;
     }
     
@@ -84,6 +84,14 @@ contract EnlistmentToContract {
     
     modifier offerInStatus(OfferStatus status, string tenantEmail) {
         require(tenantOfferMap[tenantEmail].status == status);
+        _;
+    }
+
+    modifier offerCancellable(string tenantEmail) {
+        var offerStatus = tenantOfferMap[tenantEmail].status;
+        require(offerStatus == OfferStatus.PENDING || offerStatus == OfferStatus.ACCEPTED);
+        var agreementStatus = tenantAgreementMap[tenantEmail].status;
+        require(!(agreementStatus == AgreementStatus.CANCELLED || agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED));
         _;
     }
     
@@ -129,9 +137,25 @@ contract EnlistmentToContract {
             status: OfferStatus.PENDING
         });
         tenantOfferMap[tenantEmail] = offer;
-        /* catch events in server and then only transmit them to the associated tenant? (+ always landlord) */
         OfferReceived(offer); // offer includes the email of the tenant to do event filtering
     }
+
+    function cancelOffer(string tenantEmail) payable public 
+        offerExists(tenantEmail)
+        offerCancellable(tenantEmail)
+        {
+            tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
+            if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
+                tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
+            }
+            var offer = tenantOfferMap[tenantEmail];
+                var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+                OfferUpdated(typed);
+    }
+
+
+
+
     
     function getOffer(string tenantEmail) view public returns (bool, int, string, string, OfferStatus) {
         var o = tenantOfferMap[tenantEmail];

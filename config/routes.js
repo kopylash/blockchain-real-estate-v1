@@ -29,6 +29,11 @@ module.exports = {
     action: 'getOffer'
   },
 
+  'POST /enlistments/:id/offers/cancel': {
+    controller: 'OfferController',
+    action: 'cancelOffer'
+  },
+
   'POST /enlistments/:id/offers/review': {
     controller: 'OfferController',
     action: 'reviewOffer'

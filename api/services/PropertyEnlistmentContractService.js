@@ -38,6 +38,10 @@ module.exports = {
       .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, status}));
   },
 
+  cancelOffer(contractAddress, tenantEmail) {
+    return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.cancelOffer(tenantEmail));
+  },
+
   reviewOffer(contractAddress, tenantEmail, approved = true) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.reviewOffer(approved, tenantEmail));
   },
