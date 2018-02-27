@@ -106,7 +106,7 @@ contract EnlistmentToContract {
     }
     
     
-    modifier maintainerOnly() {
+    modifier ownerOnly() {
         require(msg.sender == owner); 
         _;
     }
@@ -127,6 +127,7 @@ contract EnlistmentToContract {
     
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
+    ownerOnly()
     noActiveOffer(tenantEmail)
         {
         var offer = Offer({
@@ -141,12 +142,13 @@ contract EnlistmentToContract {
         OfferReceived(offer); // offer includes the email of the tenant to do event filtering
     }
     
-    function getOffer(string tenantEmail) view public returns (bool, int, string, string, OfferStatus) {
-        var o = tenantOfferMap[tenantEmail];
-        return (o.initialized, o.amount, o.tenantName, o.tenantEmail, o.status);
+    function getOffer(string tenantEmail) view public ownerOnly() returns (bool, int, string, string, OfferStatus) {
+            var o = tenantOfferMap[tenantEmail];
+            return (o.initialized, o.amount, o.tenantName, o.tenantEmail, o.status);
     }
     
     function reviewOffer(bool result, string tenantEmail) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.PENDING, tenantEmail)
             {
@@ -160,6 +162,7 @@ contract EnlistmentToContract {
         string agreementTenantName, string agreementTenantEmail,
         uint leaseStart, uint handoverDate, uint leasePeriod,
         string otherTerms, string hash) payable public
+            ownerOnly()
             offerExists(tenantEmail)
             offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
             draftNotPresentOrRejected(tenantEmail)
@@ -181,27 +184,28 @@ contract EnlistmentToContract {
     // can only return tuple of max 7 elements, otherwise throws "Stack too geep"
     // solution: splitted into multiple functions
         
-    function getAgreementParticipants(string tenantEmail) view public returns (string, string, string) {
+    function getAgreementParticipants(string tenantEmail) view public ownerOnly() returns (string, string, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.landlordName, a.tenantName, a.tenantEmail);
     }
     
-    function getAgreementDetails(string tenantEmail) view public returns (int, uint, uint, uint, string) {
+    function getAgreementDetails(string tenantEmail) view public ownerOnly() returns (int, uint, uint, uint, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.amount, a.leaseStart, a.handoverDate, a.leasePeriod, a.otherTerms);
     }
     
-    function getAgreementHashes(string tenantEmail) view public returns (string, string, string) {
+    function getAgreementHashes(string tenantEmail) view public ownerOnly() returns (string, string, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.hash, a.landlordSignedHash, a.tenantSignedHash);
     }
     
-    function getAgreementStatus(string tenantEmail) view public returns (AgreementStatus) {
+    function getAgreementStatus(string tenantEmail) view public ownerOnly() returns (AgreementStatus) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.status);
     }
     
     function reviewAgreement(string tenantEmail, bool result) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.PENDING, tenantEmail)
@@ -217,6 +221,7 @@ contract EnlistmentToContract {
     
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.CONFIRMED, tenantEmail)
@@ -232,6 +237,7 @@ contract EnlistmentToContract {
     }
     
     function tenantSignAgreement(string tenantEmail, string tenantSignedHash) payable public
+    ownerOnly()
     offerExists(tenantEmail)
     offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
     agreementInStatus(AgreementStatus.LANDLORD_SIGNED, tenantEmail)
@@ -247,6 +253,7 @@ contract EnlistmentToContract {
     }
     
     function receiveFirstMonthRent(string tenantEmail) payable public 
+    ownerOnly()
     offerExists(tenantEmail)
     offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
     agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
