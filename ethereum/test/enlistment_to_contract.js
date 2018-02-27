@@ -263,7 +263,25 @@ contract('EnlistmentToContract', async ([owner]) => {
         assert.equal(agreementHashes[0], 'N3WdraftPDFH4sh');
       });
 
-      it('should allow withdrawing an agreement draft until tenant has signed it', async () => {
+      it('should allow withdrawing an agreement draft when it\'s pending review', async() => {
+        await instance.cancelAgreement('cassian@reply.xd');
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['CANCELLED'], agreementStatus);
+      });
+
+      it('should not allow withdrawing an agreement draft when it has been rejected', async() => {
+        await instance.reviewAgreement('cassian@reply.xd', false);
+        await expectThrowMessage(instance.cancelAgreement('cassian@reply.xd'), revertErrorMsg);
+      });
+
+      it('should allow cancelling an agreement draft when it\'s confirmed',  async() => {
+        await instance.reviewAgreement('cassian@reply.xd', true);
+        await instance.cancelAgreement('cassian@reply.xd');
+        const agreementStatus = await instance.getAgreementStatus('cassian@reply.xd');
+        bigNumberEqual(agreementStatusMap['CANCELLED'], agreementStatus);
+      });
+
+      it('should allow withdrawing an agreement draft when landlord has signed it', async () => {
         await instance.reviewAgreement('cassian@reply.xd', true);
         await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
         await instance.cancelAgreement('cassian@reply.xd');

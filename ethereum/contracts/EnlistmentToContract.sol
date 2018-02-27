@@ -97,9 +97,8 @@ contract EnlistmentToContract {
     }
 
     modifier agreementCanBeSubmitted(string tenantEmail) {
-        require(tenantAgreementMap[tenantEmail].status == AgreementStatus.UNINITIALIZED
-        || tenantAgreementMap[tenantEmail].status == AgreementStatus.REJECTED
-        || tenantAgreementMap[tenantEmail].status == AgreementStatus.CANCELLED);
+        require(tenantAgreementMap[tenantEmail].status == AgreementStatus.UNINITIALIZED ||
+        tenantAgreementMap[tenantEmail].status == AgreementStatus.REJECTED || tenantAgreementMap[tenantEmail].status == AgreementStatus.CANCELLED);
         _;
     }
 
@@ -110,7 +109,7 @@ contract EnlistmentToContract {
 
     modifier agreementCancellable(string tenantEmail) {
         var agreementStatus = tenantAgreementMap[tenantEmail].status;
-        require(!(agreementStatus == AgreementStatus.CANCELLED ||agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED));
+        require(!(agreementStatus == AgreementStatus.CANCELLED || agreementStatus == AgreementStatus.TENANT_SIGNED || agreementStatus == AgreementStatus.COMPLETED));
         _;
     }
 
