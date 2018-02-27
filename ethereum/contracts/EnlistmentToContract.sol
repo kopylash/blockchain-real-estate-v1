@@ -18,15 +18,15 @@ contract EnlistmentToContract {
             owner = msg.sender;
     }
 
-    function getOwner() view public returns(address) {
+    function getOwner() view public ownerOnly() returns(address) {
         return owner;
     }
 
-    function getLandlord() view public returns(string) {
+    function getLandlord() view public ownerOnly() returns(string) {
         return landlord;
     }
 
-    function getEnlistment() view public returns(string, int, int, int, int) {
+    function getEnlistment() view public ownerOnly() returns(string, int, int, int, int) {
         return (enlistment.streetName, enlistment.floorNr,
             enlistment.apartmentNr, enlistment.houseNr, enlistment.postalCode);
     }
