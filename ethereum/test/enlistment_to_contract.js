@@ -47,6 +47,11 @@ contract('EnlistmentToContract', async ([owner]) => {
       assert.equal(landlord, 'landlord@email.xd');
     });
 
+    it('should set locked property to false', async() => {
+      let isLocked = await contract.locked.call();
+      assert.isFalse(isLocked);
+    })
+
     it('should instanciate the enlistment', async () => {
       let enlistment = await contract.enlistment.call(); // returns an array which represents an enlistment struct
       assert.equal(enlistment[0], 'Waker');
@@ -287,6 +292,43 @@ contract('EnlistmentToContract', async ([owner]) => {
         assert.equal(agreementHashes[1], 'l4ndl0rdSignedDraftPDFH4sh');
       });
 
+      it('should set the locked property to "true" after the landlord signs', async() => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        const isLocked = await instance.locked.call();
+        assert.isTrue(isLocked);
+      });
+
+      it('should lock the enlistment for new offers after the landlord signs', async() => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await expectThrowMessage(instance.sendOffer(800, 'Gianna', 'gianna@never-reply.xd'), revertErrorMsg);
+      });
+
+      it('should block signing of any other agreement until the enlistment is locked', async() => {
+        await instance.sendOffer(5000, 'Moriarty', 'morry@reply.xd');
+
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+
+        await instance.reviewOffer(true, 'morry@reply.xd');
+        await instance.submitDraft('morry@reply.xd', 'John Wick', 'Cassian', 'morry@reply.xd', 12, 15, 65, 'No cats', 'H4sh');
+        await instance.reviewAgreement('morry@reply.xd', true);
+
+        await expectThrowMessage(instance.landlordSignAgreement('morry@reply.xd', 'secondHash'));
+      });
+
+      it('unlocks upon offer cancellation', async () => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.cancelOffer('cassian@reply.xd');
+        const isLocked = await instance.locked.call();
+        assert.isFalse(isLocked);
+      });
+
+      it('unlocks upon agreement cancellation', async () => {
+        await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
+        await instance.cancelAgreement('cassian@reply.xd');
+        const isLocked = await instance.locked.call();
+        assert.isFalse(isLocked);
+      });
+
       it('should sign the contract: tenant', async() => {
         await instance.landlordSignAgreement('cassian@reply.xd', 'l4ndl0rdSignedDraftPDFH4sh');
         await instance.tenantSignAgreement('cassian@reply.xd', 't3n4ntSignedDraftPDFH4sh');
@@ -297,6 +339,7 @@ contract('EnlistmentToContract', async ([owner]) => {
         const agreementHashes = await instance.getAgreementHashes('cassian@reply.xd');
         assert.equal(agreementHashes[2], 't3n4ntSignedDraftPDFH4sh');
       });
+
     });
 
     describe('Cancelling an offer after the initial review loop', async() => {

@@ -8,6 +8,7 @@ contract EnlistmentToContract {
     
     address owner;
     string public landlord;
+    bool public locked = false;
     Enlistment public enlistment;
     mapping(string => Offer) tenantOfferMap;
     mapping(string => AgreementDraft) tenantAgreementMap;
@@ -104,6 +105,11 @@ contract EnlistmentToContract {
         require(tenantAgreementMap[tenantEmail].status == status);
         _;
     }
+
+    modifier notLocked() {
+        require(!locked);
+        _;
+    }
     
     
     modifier maintainerOnly() {
@@ -128,6 +134,7 @@ contract EnlistmentToContract {
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
     noActiveOffer(tenantEmail)
+    notLocked()
         {
         var offer = Offer({
             initialized: true,
@@ -233,12 +240,14 @@ contract EnlistmentToContract {
     
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
+        notLocked()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.CONFIRMED, tenantEmail)
         {
             tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
             tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
+            locked = true;
             var agreement = tenantAgreementMap[tenantEmail];
             var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
                 agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
