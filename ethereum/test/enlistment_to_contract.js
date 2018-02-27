@@ -30,7 +30,7 @@ const revertErrorMsg = 'VM Exception while processing transaction: revert';
 
 contract('EnlistmentToContract', async ([owner]) => {
 
-  contract('Enlistment/contract creation', async () => {
+  contract('Enlistment/contract creation', async ([deployerAddress]) => {
 
     let contract;
 
@@ -43,17 +43,22 @@ contract('EnlistmentToContract', async ([owner]) => {
     });
 
     it('should instantiate the landlord property', async () => {
-      let landlord = await contract.landlord.call();
+      let landlord = await contract.getLandlord();
       assert.equal(landlord, 'landlord@email.xd');
     });
 
-    it('should instanciate the enlistment', async () => {
-      let enlistment = await contract.enlistment.call(); // returns an array which represents an enlistment struct
+    it('should instantiate the enlistment', async () => {
+      let enlistment = await contract.getEnlistment(); // returns an array which represents an enlistment struct
       assert.equal(enlistment[0], 'Waker');
       assert.equal(enlistment[1], 3);
       assert.equal(enlistment[2], 2);
       assert.equal(enlistment[3], 1);
       assert.equal(enlistment[4], 15000);
+    });
+
+    it('should set the owner property to the address that was used for deployment', async () => {
+      let contractOwner = await contract.getOwner();
+      assert.equal(deployerAddress, contractOwner);
     });
   });
 
@@ -310,6 +315,18 @@ contract('EnlistmentToContract', async ([owner]) => {
         bigNumberEqual(agreementStatusMap['COMPLETED'], agreementStatus);
       });
     });
+  });
+
+  contract('Security', async([fstAccount, sndAccount]) => {
+
+    let instance;
+
+    beforeEach('create an enlistment, send an offer', async () => {
+      instance = await ETC.new('john@wick.xd', 'Baker', 1, 2, 3, 45000);
+      await instance.sendOffer(400, 'Cassian', 'cassian@reply.xd');
+    });
+
+    it('should not access any other address other than the instantiator to access');
 
   });
 

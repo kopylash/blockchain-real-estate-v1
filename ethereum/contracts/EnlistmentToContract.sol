@@ -1,14 +1,9 @@
 pragma solidity ^0.4.18;
 contract EnlistmentToContract {
     
-    // instanciated after the enlistment is approved by admins
-    // price and other params omitted from bc enlistment because they are subject to change
-    
-    // compare this with another layer of nesting (all enlistments in one instance)
-    
     address owner;
-    string public landlord;
-    Enlistment public enlistment;
+    string landlord;
+    Enlistment enlistment;
     mapping(string => Offer) tenantOfferMap;
     mapping(string => AgreementDraft) tenantAgreementMap;
 
@@ -22,7 +17,20 @@ contract EnlistmentToContract {
             landlord = landlordEmail;
             owner = msg.sender;
     }
-    
+
+    function getOwner() view public returns(address) {
+        return owner;
+    }
+
+    function getLandlord() view public returns(string) {
+        return landlord;
+    }
+
+    function getEnlistment() view public returns(string, int, int, int, int) {
+        return (enlistment.streetName, enlistment.floorNr,
+            enlistment.apartmentNr, enlistment.houseNr, enlistment.postalCode);
+    }
+
     enum OfferStatus {
         PENDING,
         REJECTED,
