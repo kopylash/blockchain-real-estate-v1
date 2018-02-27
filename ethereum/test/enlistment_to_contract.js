@@ -327,8 +327,8 @@ contract('EnlistmentToContract', async ([owner]) => {
     });
 
     it('should not access any other address other than the instantiator to access', async() => {
-      await expectThrowMessage(instance.getOffer('cassian@reply.xd'), revertErrorMsg);
-      await expectThrowMessage(instance.sendOffer(666, 'Spambot', 'fake@email.com'), revertErrorMsg);
+      await expectThrowMessage(instance.getOffer('cassian@reply.xd', {from: sndAccount}), revertErrorMsg);
+      await expectThrowMessage(instance.sendOffer(666, 'Spambot', 'fake@email.com', {from: sndAccount}), revertErrorMsg);
     });
 
   });
