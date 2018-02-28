@@ -126,20 +126,6 @@ contract EnlistmentToContract {
         _;
     }
 
-    event OfferReceived (Offer offer);
-
-    event AgreementReceived (AgreementDraft agreement);
-
-    event OfferUpdated(Offer offer);
-
-    event AgreementReviewed(AgreementDraft agreement); // vs single updated method? performance vs cost?
-
-    event AgreementLandlordSigned(AgreementDraft agreement);
-
-    event AgreementTenantSigned(AgreementDraft agreement);
-
-    event AgreementCompleted(AgreementDraft agreement);
-
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
         ownerOnly()
@@ -154,7 +140,6 @@ contract EnlistmentToContract {
             status: OfferStatus.PENDING
         });
         tenantOfferMap[tenantEmail] = offer;
-        OfferReceived(offer); // offer includes the email of the tenant to do event filtering
     }
 
     function cancelOffer(string tenantEmail) payable public
@@ -167,9 +152,6 @@ contract EnlistmentToContract {
             tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
         }
         locked = false;
-        var offer = tenantOfferMap[tenantEmail];
-        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-        OfferUpdated(typed);
     }
 
     function getOffer(string tenantEmail) view public ownerOnly() returns (bool, int, string, string, OfferStatus) {
@@ -183,9 +165,6 @@ contract EnlistmentToContract {
         offerInStatus(OfferStatus.PENDING, tenantEmail)
     {
         tenantOfferMap[tenantEmail].status = result ? OfferStatus.ACCEPTED : OfferStatus.REJECTED;
-        var offer = tenantOfferMap[tenantEmail];
-        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-        OfferUpdated(typed);
     }
 
     function submitDraft(string tenantEmail, string landlordName, string agreementTenantName, string agreementTenantEmail,
@@ -201,12 +180,6 @@ contract EnlistmentToContract {
             amount, leaseStart,
             handoverDate, leasePeriod,
             otherTerms, hash, "", "", AgreementStatus.PENDING);
-        // CompilerError: stack too deep, try removing local variables. Error only appears in local development, all good with browser one (remix.ethereum.org)
-        AgreementReceived(AgreementDraft(landlordName,
-            agreementTenantName, agreementTenantEmail,
-            amount, leaseStart,
-            handoverDate, leasePeriod,
-            otherTerms, hash, "", "", AgreementStatus.PENDING));
     }
 
     // getAgreement functions:
@@ -240,13 +213,6 @@ contract EnlistmentToContract {
         agreementInStatus(AgreementStatus.PENDING, tenantEmail)
     {
         tenantAgreementMap[tenantEmail].status = result ? AgreementStatus.CONFIRMED : AgreementStatus.REJECTED;
-        var agreement = tenantAgreementMap[tenantEmail];
-        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-        AgreementReviewed(typed);
-        // watch out for untyped nested struct
     }
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
@@ -259,13 +225,6 @@ contract EnlistmentToContract {
         tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
         tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
         locked = true;
-        var agreement = tenantAgreementMap[tenantEmail];
-        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-        AgreementLandlordSigned(typed);
-        // emitting a struct is more expensive
     }
 
     function tenantSignAgreement(string tenantEmail, string tenantSignedHash) payable public
@@ -276,12 +235,6 @@ contract EnlistmentToContract {
     {
         tenantAgreementMap[tenantEmail].tenantSignedHash = tenantSignedHash;
         tenantAgreementMap[tenantEmail].status = AgreementStatus.TENANT_SIGNED;
-        var agreement = tenantAgreementMap[tenantEmail];
-        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-        AgreementTenantSigned(typed);
     }
 
     function cancelAgreement(string tenantEmail) payable public
@@ -299,11 +252,5 @@ contract EnlistmentToContract {
         agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
     {
         tenantAgreementMap[tenantEmail].status = AgreementStatus.COMPLETED;
-        var agreement = tenantAgreementMap[tenantEmail];
-        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-        AgreementCompleted(typed);
     }
 }
