@@ -1,27 +1,30 @@
 pragma solidity ^0.4.18;
 contract EnlistmentToContract {
 
-    // instanciated after the enlistment is approved by admins
-    // price and other params omitted from bc enlistment because they are subject to change
-
-    // compare this with another layer of nesting (all enlistments in one instance)
-
     address owner;
-    string public landlord;
+    string landlord;
     bool public locked = false;
-    Enlistment public enlistment;
+    Enlistment enlistment;
     mapping(string => Offer) tenantOfferMap;
     mapping(string => AgreementDraft) tenantAgreementMap;
 
-    function EnlistmentToContract(
-        string landlordEmail, string streetName,
-        int floorNr, int apartmentNr, int houseNr,
-        int postalCode) public
-            {
-            enlistment = Enlistment(streetName, floorNr, apartmentNr,
-                houseNr, postalCode);
-            landlord = landlordEmail;
-            owner = msg.sender;
+    function EnlistmentToContract(string landlordEmail, string streetName, int floorNr, int apartmentNr, int houseNr, int postalCode) public
+    {
+        enlistment = Enlistment(streetName, floorNr, apartmentNr, houseNr, postalCode);
+        landlord = landlordEmail;
+        owner = msg.sender;
+    }
+
+    function getOwner() view public ownerOnly() returns (address) {
+        return owner;
+    }
+
+    function getLandlord() view public ownerOnly() returns (string) {
+        return landlord;
+    }
+
+    function getEnlistment() view public ownerOnly() returns (string, int, int, int, int) {
+        return (enlistment.streetName, enlistment.floorNr, enlistment.apartmentNr, enlistment.houseNr, enlistment.postalCode);
     }
 
     enum OfferStatus {
@@ -118,7 +121,7 @@ contract EnlistmentToContract {
         _;
     }
 
-    modifier maintainerOnly() {
+    modifier ownerOnly() {
         require(msg.sender == owner);
         _;
     }
@@ -139,9 +142,10 @@ contract EnlistmentToContract {
 
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
-    noActiveOffer(tenantEmail)
-    notLocked()
-        {
+        ownerOnly()
+        noActiveOffer(tenantEmail)
+        notLocked()
+    {
         var offer = Offer({
             initialized: true,
             amount: amount,
@@ -154,36 +158,39 @@ contract EnlistmentToContract {
     }
 
     function cancelOffer(string tenantEmail) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerCancellable(tenantEmail)
     {
-            tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
-            if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
-                tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
-            }
-            locked = false;
-            var offer = tenantOfferMap[tenantEmail];
-                var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-                OfferUpdated(typed);
+        tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
+        if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
+            tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
+        }
+        locked = false;
+        var offer = tenantOfferMap[tenantEmail];
+        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+        OfferUpdated(typed);
     }
 
-    function getOffer(string tenantEmail) view public returns (bool, int, string, string, OfferStatus) {
+    function getOffer(string tenantEmail) view public ownerOnly() returns (bool, int, string, string, OfferStatus) {
         var o = tenantOfferMap[tenantEmail];
         return (o.initialized, o.amount, o.tenantName, o.tenantEmail, o.status);
     }
 
     function reviewOffer(bool result, string tenantEmail) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.PENDING, tenantEmail)
-            {
-            tenantOfferMap[tenantEmail].status = result ? OfferStatus.ACCEPTED : OfferStatus.REJECTED;
-            var offer = tenantOfferMap[tenantEmail];
-            var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-            OfferUpdated(typed);
+    {
+        tenantOfferMap[tenantEmail].status = result ? OfferStatus.ACCEPTED : OfferStatus.REJECTED;
+        var offer = tenantOfferMap[tenantEmail];
+        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+        OfferUpdated(typed);
     }
 
     function submitDraft(string tenantEmail, string landlordName, string agreementTenantName, string agreementTenantEmail,
         uint leaseStart, uint handoverDate, uint leasePeriod, string otherTerms, string hash) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementCanBeSubmitted(tenantEmail)
@@ -206,61 +213,66 @@ contract EnlistmentToContract {
     // can only return tuple of max 7 elements, otherwise throws "Stack too geep"
     // solution: splitted into multiple functions
 
-    function getAgreementParticipants(string tenantEmail) view public returns (string, string, string) {
+    function getAgreementParticipants(string tenantEmail) view public ownerOnly() returns (string, string, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.landlordName, a.tenantName, a.tenantEmail);
     }
 
-    function getAgreementDetails(string tenantEmail) view public returns (int, uint, uint, uint, string) {
+    function getAgreementDetails(string tenantEmail) view public ownerOnly() returns (int, uint, uint, uint, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.amount, a.leaseStart, a.handoverDate, a.leasePeriod, a.otherTerms);
     }
 
-    function getAgreementHashes(string tenantEmail) view public returns (string, string, string) {
+    function getAgreementHashes(string tenantEmail) view public ownerOnly() returns (string, string, string) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.hash, a.landlordSignedHash, a.tenantSignedHash);
     }
 
-    function getAgreementStatus(string tenantEmail) view public returns (AgreementStatus) {
+    function getAgreementStatus(string tenantEmail) view public ownerOnly() returns (AgreementStatus) {
         var a = tenantAgreementMap[tenantEmail];
         return (a.status);
     }
 
     function reviewAgreement(string tenantEmail, bool result) payable public
+        ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.PENDING, tenantEmail)
-            {
-            tenantAgreementMap[tenantEmail].status = result ? AgreementStatus.CONFIRMED : AgreementStatus.REJECTED;
-            var agreement = tenantAgreementMap[tenantEmail];
-            var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-                agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-                agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-                agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-            AgreementReviewed(typed); // watch out for untyped nested struct
-        }
+    {
+        tenantAgreementMap[tenantEmail].status = result ? AgreementStatus.CONFIRMED : AgreementStatus.REJECTED;
+        var agreement = tenantAgreementMap[tenantEmail];
+        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
+            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
+            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
+            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
+        AgreementReviewed(typed);
+        // watch out for untyped nested struct
+    }
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
+        ownerOnly()
         notLocked()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.CONFIRMED, tenantEmail)
-        {
-            tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
-            tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
-            locked = true;
-            var agreement = tenantAgreementMap[tenantEmail];
-            var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-                agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-                agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-                agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-            AgreementLandlordSigned(typed); // emitting a struct is more expensive
+    {
+        tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
+        tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
+        locked = true;
+        var agreement = tenantAgreementMap[tenantEmail];
+        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
+            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
+            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
+            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
+        AgreementLandlordSigned(typed);
+        // emitting a struct is more expensive
     }
 
     function tenantSignAgreement(string tenantEmail, string tenantSignedHash) payable public
-    offerExists(tenantEmail)
-    offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
-    agreementInStatus(AgreementStatus.LANDLORD_SIGNED, tenantEmail)
+        ownerOnly()
+        offerExists(tenantEmail)
+        offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
+        agreementInStatus(AgreementStatus.LANDLORD_SIGNED, tenantEmail)
     {
         tenantAgreementMap[tenantEmail].tenantSignedHash = tenantSignedHash;
         tenantAgreementMap[tenantEmail].status = AgreementStatus.TENANT_SIGNED;
@@ -273,17 +285,19 @@ contract EnlistmentToContract {
     }
 
     function cancelAgreement(string tenantEmail) payable public
-    agreementCancellable(tenantEmail)
+        ownerOnly()
+        agreementCancellable(tenantEmail)
     {
         tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
         locked = false;
     }
 
     function receiveFirstMonthRent(string tenantEmail) payable public
-    offerExists(tenantEmail)
-    offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
-    agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
-        {
+        ownerOnly()
+        offerExists(tenantEmail)
+        offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
+        agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
+    {
         tenantAgreementMap[tenantEmail].status = AgreementStatus.COMPLETED;
         var agreement = tenantAgreementMap[tenantEmail];
         var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
