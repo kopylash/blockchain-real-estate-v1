@@ -17,6 +17,14 @@ module.exports = {
     res.json(offer);
   },
 
+  async cancelOffer(req, res) {
+    await PropertyEnlistmentService.cancelOffer(req.params.id, req.body.tenantEmail);
+
+    log.info(`Offer cancelled`);
+
+    res.status(200).send();
+  },
+
   async reviewOffer(req, res) {
     await PropertyEnlistmentService.reviewOffer(req.params.id, req.body.tenantEmail, req.body.approved);
 

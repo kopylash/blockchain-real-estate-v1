@@ -29,6 +29,11 @@ module.exports = {
     action: 'getOffer'
   },
 
+  'POST /enlistments/:id/offers/cancel': {
+    controller: 'OfferController',
+    action: 'cancelOffer'
+  },
+
   'POST /enlistments/:id/offers/review': {
     controller: 'OfferController',
     action: 'reviewOffer'
@@ -52,6 +57,11 @@ module.exports = {
   'POST /enlistments/:id/agreements/sign': {
     controller: 'AgreementContractController',
     action: 'signAgreement'
+  },
+
+  'POST /enlistments/:id/agreements/cancel': {
+    controller: 'AgreementContractController',
+    action: 'cancelAgreement'
   },
 
   'POST /enlistments/:id/payments': {

@@ -61,6 +61,16 @@ module.exports = {
     return PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, tenantEmail);
   },
 
+  async cancelOffer(enlistmentId, tenantEmail) {
+    const enlistment = await Models.PropertyEnlistment.findOne({
+      where: {
+        id: enlistmentId
+      }
+    });
+
+    return PropertyEnlistmentContractService.cancelOffer(enlistment.contractAddress, tenantEmail);
+  },
+
   async reviewOffer(enlistmentId, tenantEmail, approved = true) {
     const enlistment = await Models.PropertyEnlistment.findOne({
       where: {
@@ -113,6 +123,16 @@ module.exports = {
     } else {
       return PropertyEnlistmentContractService.tenantSignAgreement(enlistment.contractAddress, tenantEmail, signatureHash);
     }
+  },
+
+  async cancelAgreement(enlistmentId, tenantEmail) {
+    const enlistment = await Models.PropertyEnlistment.findOne({
+      where: {
+        id: enlistmentId
+      }
+    });
+
+    return PropertyEnlistmentContractService.cancelAgreement(enlistment.contractAddress, tenantEmail);
   },
 
   async receiveFirstMonthRent(enlistmentId, tenantEmail) {
