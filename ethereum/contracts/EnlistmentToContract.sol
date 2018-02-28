@@ -8,28 +8,25 @@ contract EnlistmentToContract {
     mapping(string => Offer) tenantOfferMap;
     mapping(string => AgreementDraft) tenantAgreementMap;
 
-    function EnlistmentToContract(
-        string landlordEmail, string streetName,
-        int floorNr, int apartmentNr, int houseNr,
-        int postalCode) public
-            {
-            enlistment = Enlistment(streetName, floorNr, apartmentNr,
-                houseNr, postalCode);
-            landlord = landlordEmail;
-            owner = msg.sender;
+    function EnlistmentToContract(string landlordEmail, string streetName, int floorNr, int apartmentNr, int houseNr, int postalCode) public
+    {
+        enlistment = Enlistment(streetName, floorNr, apartmentNr, houseNr, postalCode);
+        landlord = landlordEmail;
+        owner = msg.sender;
     }
-    function getOwner() view public ownerOnly() returns(address) {
+
+    function getOwner() view public ownerOnly() returns (address) {
         return owner;
     }
 
-    function getLandlord() view public ownerOnly() returns(string) {
+    function getLandlord() view public ownerOnly() returns (string) {
         return landlord;
     }
 
-    function getEnlistment() view public ownerOnly() returns(string, int, int, int, int) {
-        return (enlistment.streetName, enlistment.floorNr,
-            enlistment.apartmentNr, enlistment.houseNr, enlistment.postalCode);
+    function getEnlistment() view public ownerOnly() returns (string, int, int, int, int) {
+        return (enlistment.streetName, enlistment.floorNr, enlistment.apartmentNr, enlistment.houseNr, enlistment.postalCode);
     }
+
     enum OfferStatus {
         PENDING,
         REJECTED,
@@ -145,10 +142,10 @@ contract EnlistmentToContract {
 
     // what if the offer is in status PENDING and the tenant wants to send a new one?
     function sendOffer(int amount, string tenantName, string tenantEmail) payable public
-    ownerOnly()
-    noActiveOffer(tenantEmail)
-    notLocked()
-        {
+        ownerOnly()
+        noActiveOffer(tenantEmail)
+        notLocked()
+    {
         var offer = Offer({
             initialized: true,
             amount: amount,
@@ -165,14 +162,14 @@ contract EnlistmentToContract {
         offerExists(tenantEmail)
         offerCancellable(tenantEmail)
     {
-            tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
-            if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
-                tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
-            }
-            locked = false;
-            var offer = tenantOfferMap[tenantEmail];
-                var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-                OfferUpdated(typed);
+        tenantOfferMap[tenantEmail].status = OfferStatus.CANCELLED;
+        if (tenantAgreementMap[tenantEmail].status != AgreementStatus.UNINITIALIZED) {
+            tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
+        }
+        locked = false;
+        var offer = tenantOfferMap[tenantEmail];
+        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+        OfferUpdated(typed);
     }
 
     function getOffer(string tenantEmail) view public ownerOnly() returns (bool, int, string, string, OfferStatus) {
@@ -184,11 +181,11 @@ contract EnlistmentToContract {
         ownerOnly()
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.PENDING, tenantEmail)
-            {
-            tenantOfferMap[tenantEmail].status = result ? OfferStatus.ACCEPTED : OfferStatus.REJECTED;
-            var offer = tenantOfferMap[tenantEmail];
-            var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
-            OfferUpdated(typed);
+    {
+        tenantOfferMap[tenantEmail].status = result ? OfferStatus.ACCEPTED : OfferStatus.REJECTED;
+        var offer = tenantOfferMap[tenantEmail];
+        var typed = Offer(offer.initialized, offer.amount, offer.tenantName, offer.tenantEmail, offer.status);
+        OfferUpdated(typed);
     }
 
     function submitDraft(string tenantEmail, string landlordName, string agreementTenantName, string agreementTenantEmail,
@@ -241,15 +238,16 @@ contract EnlistmentToContract {
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.PENDING, tenantEmail)
-            {
-            tenantAgreementMap[tenantEmail].status = result ? AgreementStatus.CONFIRMED : AgreementStatus.REJECTED;
-            var agreement = tenantAgreementMap[tenantEmail];
-            var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-                agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-                agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-                agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-            AgreementReviewed(typed); // watch out for untyped nested struct
-        }
+    {
+        tenantAgreementMap[tenantEmail].status = result ? AgreementStatus.CONFIRMED : AgreementStatus.REJECTED;
+        var agreement = tenantAgreementMap[tenantEmail];
+        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
+            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
+            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
+            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
+        AgreementReviewed(typed);
+        // watch out for untyped nested struct
+    }
 
     function landlordSignAgreement(string tenantEmail, string landlordSignedHash) payable public
         ownerOnly()
@@ -257,23 +255,24 @@ contract EnlistmentToContract {
         offerExists(tenantEmail)
         offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
         agreementInStatus(AgreementStatus.CONFIRMED, tenantEmail)
-        {
-            tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
-            tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
-            locked = true;
-            var agreement = tenantAgreementMap[tenantEmail];
-            var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
-                agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
-                agreement.leasePeriod, agreement.otherTerms, agreement.hash,
-                agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
-            AgreementLandlordSigned(typed); // emitting a struct is more expensive
+    {
+        tenantAgreementMap[tenantEmail].landlordSignedHash = landlordSignedHash;
+        tenantAgreementMap[tenantEmail].status = AgreementStatus.LANDLORD_SIGNED;
+        locked = true;
+        var agreement = tenantAgreementMap[tenantEmail];
+        var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
+            agreement.tenantEmail, agreement.amount, agreement.leaseStart, agreement.handoverDate,
+            agreement.leasePeriod, agreement.otherTerms, agreement.hash,
+            agreement.landlordSignedHash, agreement.tenantSignedHash, agreement.status);
+        AgreementLandlordSigned(typed);
+        // emitting a struct is more expensive
     }
 
     function tenantSignAgreement(string tenantEmail, string tenantSignedHash) payable public
-    ownerOnly()
-    offerExists(tenantEmail)
-    offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
-    agreementInStatus(AgreementStatus.LANDLORD_SIGNED, tenantEmail)
+        ownerOnly()
+        offerExists(tenantEmail)
+        offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
+        agreementInStatus(AgreementStatus.LANDLORD_SIGNED, tenantEmail)
     {
         tenantAgreementMap[tenantEmail].tenantSignedHash = tenantSignedHash;
         tenantAgreementMap[tenantEmail].status = AgreementStatus.TENANT_SIGNED;
@@ -286,19 +285,19 @@ contract EnlistmentToContract {
     }
 
     function cancelAgreement(string tenantEmail) payable public
-    ownerOnly()
-    agreementCancellable(tenantEmail)
+        ownerOnly()
+        agreementCancellable(tenantEmail)
     {
         tenantAgreementMap[tenantEmail].status = AgreementStatus.CANCELLED;
         locked = false;
     }
 
     function receiveFirstMonthRent(string tenantEmail) payable public
-    ownerOnly()
-    offerExists(tenantEmail)
-    offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
-    agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
-        {
+        ownerOnly()
+        offerExists(tenantEmail)
+        offerInStatus(OfferStatus.ACCEPTED, tenantEmail)
+        agreementInStatus(AgreementStatus.TENANT_SIGNED, tenantEmail)
+    {
         tenantAgreementMap[tenantEmail].status = AgreementStatus.COMPLETED;
         var agreement = tenantAgreementMap[tenantEmail];
         var typed = AgreementDraft(agreement.landlordName, agreement.tenantName,
