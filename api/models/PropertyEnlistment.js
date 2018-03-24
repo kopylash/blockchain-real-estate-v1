@@ -41,7 +41,8 @@ module.exports = (sequelize) => {
       values: [Status.PENDING, Status.APPROVED, Status.REJECTED, Status.CANCELLED],
       defaultValue: Status.PENDING
     },
-    geolocation: DataTypes.GEOMETRY('POINT') // eslint-disable-line new-cap
+    geolocation: DataTypes.GEOMETRY('POINT'), // eslint-disable-line new-cap
+    offerAuthors: DataTypes.ARRAY(DataTypes.TEXT) // eslint-disable-line new-cap
   }, {
     freezeTableName: true
   });
@@ -52,6 +53,10 @@ module.exports = (sequelize) => {
 
   PropertyEnlistment.prototype.reject = function() {
     this.status = Status.REJECTED;
+  };
+
+  PropertyEnlistment.prototype.addOfferAuthor = function(author) {
+    this.offerAuthors = this.offerAuthors.concat(author);
   };
 
   PropertyEnlistment.findInArea = function(latitude, longitude, distance) {

@@ -18,6 +18,13 @@ PropertyEnlistmentContract.defaults({
   gasPrice: 1000000000
 });
 
+const offerStatusMap = {
+  0: 'PENDING',
+  1: 'REJECTED',
+  2: 'CANCELLED',
+  3: 'ACCEPTED'
+};
+
 module.exports = {
   createEnlistment(landlordName, streetName, floor, apartment, house, zipCode) {
     return PropertyEnlistmentContract.new(landlordName, streetName, floor, apartment, house, zipCode).then(contract => {
@@ -30,7 +37,7 @@ module.exports = {
   getEnlistment(contractAddress) {
     return PropertyEnlistmentContract.at(contractAddress)
       .then(contract => contract.getEnlistment.call())
-      .then(resultStruct => contractResponseMapper.mapEnlistment(resultStruct));
+      .then(([streetName, floor, apartment, house, zipCode]) => ({streetName, floor, apartment, house, zipCode}));
   },
 
   sendOffer(contractAddress, {amount, tenantName, tenantEmail}) {
@@ -41,7 +48,8 @@ module.exports = {
   getOffer(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.getOffer.call(tenantEmail))
     // TODO: convert BigNumber
-      .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, status}));
+      .then(([initialized, amount, tenantName, tenantEmail, status]) =>
+      ({initialized, amount, tenantName, tenantEmail, status: offerStatusMap[status]}));
   },
 
   cancelOffer(contractAddress, tenantEmail) {

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize) => {
-  sequelize.sync();
+  sequelize.sync({force: true});
 
   return {
     PropertyEnlistment: sequelize.import('PropertyEnlistment')

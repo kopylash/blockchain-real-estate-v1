@@ -11,8 +11,13 @@ module.exports = {
     res.status(201).send();
   },
 
+  async getOffers(req, res) {
+    let offers = await PropertyEnlistmentService.getOffers(req.params.id);
+    res.json(offers);
+  },
+
   async getOffer(req, res) {
-    const offer = await PropertyEnlistmentService.getOffer(req.params.id, req.query.tenantEmail);
+    const offer = await PropertyEnlistmentService.getOffer(req.params.id, req.params.tenantEmail);
 
     res.json(offer);
   },

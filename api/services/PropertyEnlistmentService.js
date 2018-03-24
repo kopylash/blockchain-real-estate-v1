@@ -10,6 +10,7 @@ module.exports = {
       type: 'Point',
       coordinates: [enlistment.latitude, enlistment.longitude]
     };
+    enlistment.offerAuthors = [];
 
     return Models.PropertyEnlistment.create(enlistment);
   },
@@ -36,9 +37,9 @@ module.exports = {
     return Promise.all(dbEnlistments.map(async (instanceObj) => {
       let dbEnlistment = instanceObj.get({ plain: true });
 
-        const contractEnlistment =
-          await PropertyEnlistmentContractService.getEnlistment(dbEnlistment.contractAddress);
-        return Object.assign({}, dbEnlistment, contractEnlistment);
+      const contractEnlistment =
+        await PropertyEnlistmentContractService.getEnlistment(dbEnlistment.contractAddress);
+      return Object.assign({}, dbEnlistment, contractEnlistment);
     }));
   },
 
@@ -73,8 +74,23 @@ module.exports = {
         id: enlistmentId
       }
     });
+    await PropertyEnlistmentContractService.sendOffer(enlistment.contractAddress, { amount, tenantName, tenantEmail });
+    await enlistment.addOfferAuthor(tenantEmail);
+    return enlistment.save();
+  },
 
-    return PropertyEnlistmentContractService.sendOffer(enlistment.contractAddress, { amount, tenantName, tenantEmail });
+  async getOffers(enlistmentId) {
+    const enlistment = await Models.PropertyEnlistment.findOne({
+      where: {
+        id: enlistmentId
+      }
+    });
+    log.info('enlistment: ', enlistment.get({plain: true}));
+    return Promise.all(enlistment.get({plain: true}).offerAuthors.map(async (offerAuthor) => {
+      const contractOffer =
+        await PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, offerAuthor);
+      return contractOffer;
+    }));
   },
 
   async getOffer(enlistmentId, tenantEmail) {
