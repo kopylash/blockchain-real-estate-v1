@@ -6,7 +6,7 @@ module.exports = {
 
   'GET /enlistments': {
     controller: 'PropertyEnlistmentController',
-    action: 'findInArea'
+    action: 'findEnlistments'
   },
 
   'POST /enlistments/:id/approve': {

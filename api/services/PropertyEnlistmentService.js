@@ -1,6 +1,8 @@
 'use strict';
 
 const PropertyEnlistmentContractService = require('./PropertyEnlistmentContractService');
+const Status = require('../models/enums/PropertyEnlistmentStatus');
+const log = require('../../server/logger');
 
 module.exports = {
   createEnlistment(enlistment) {
@@ -16,8 +18,32 @@ module.exports = {
     return Models.PropertyEnlistment.findInArea(latitude, longitude, distance);
   },
 
+  findAllUnpublished() {
+    return Models.PropertyEnlistment.findAll(
+      {
+        where: { status: [Status.REJECTED, Status.PENDING, Status.CANCELLED] }
+      }
+    );
+  },
+
+  async findAllReviewed() {
+    const dbEnlistments = await Models.PropertyEnlistment.findAll(
+      {
+        where: { status: Status.APPROVED }
+      }
+    );
+
+    return Promise.all(dbEnlistments.map(async (instanceObj) => {
+      let dbEnlistment = instanceObj.get({ plain: true });
+
+        const contractEnlistment =
+          await PropertyEnlistmentContractService.getEnlistment(dbEnlistment.contractAddress);
+        return Object.assign({}, dbEnlistment, contractEnlistment);
+    }));
+  },
+
   async approveEnlistment(enlistmentId) {
-    const enlistment = await Models.PropertyEnlistment.findOne({where: {id: enlistmentId}});
+    const enlistment = await Models.PropertyEnlistment.findOne({ where: { id: enlistmentId } });
 
     enlistment.approve();
 
@@ -34,21 +60,21 @@ module.exports = {
   },
 
   async rejectEnlistment(enlistmentId) {
-    const enlistment = await Models.PropertyEnlistment.findOne({where: {id: enlistmentId}});
+    const enlistment = await Models.PropertyEnlistment.findOne({ where: { id: enlistmentId } });
 
     enlistment.reject();
 
     return enlistment.save();
   },
 
-  async sendOffer(enlistmentId, {amount, tenantName, tenantEmail}) {
+  async sendOffer(enlistmentId, { amount, tenantName, tenantEmail }) {
     const enlistment = await Models.PropertyEnlistment.findOne({
       where: {
         id: enlistmentId
       }
     });
 
-    return PropertyEnlistmentContractService.sendOffer(enlistment.contractAddress, {amount, tenantName, tenantEmail});
+    return PropertyEnlistmentContractService.sendOffer(enlistment.contractAddress, { amount, tenantName, tenantEmail });
   },
 
   async getOffer(enlistmentId, tenantEmail) {
