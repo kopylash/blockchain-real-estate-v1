@@ -29,15 +29,16 @@ module.exports = {
   },
 
   async findEnlistments(req, res) {
-    if (!req.query.latitude && req.query.longitude || req.query.latitude && !req.query.longitude) {
-      throw new Error('If provided, latitude and longitude are both required');
+    if ((req.query.latitude || req.query.longitude || req.query.distance) &&
+      !(req.query.latitude && req.query.longitude && req.query.distance)) {
+      return res.status(400).send('Latitude, longitude and distance are all required for geosearch');
     }
 
     let enlistments;
 
     if (req.query.admin) {
       enlistments = await PropertyEnlistmentService.findAllUnpublished();
-    } else if (req.query.latitude && req.query.longitude) {
+    } else if (req.query.latitude && req.query.longitude && req.query.distance) {
       enlistments = await PropertyEnlistmentService.findInArea(
         parseFloat(req.query.latitude), parseFloat(req.query.longitude), parseFloat(req.query.distance)) || [];
     } else if (req.query.bidder) {
