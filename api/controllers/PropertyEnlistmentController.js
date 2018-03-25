@@ -40,6 +40,8 @@ module.exports = {
     } else if (req.query.latitude && req.query.longitude) {
       enlistments = await PropertyEnlistmentService.findInArea(
         parseFloat(req.query.latitude), parseFloat(req.query.longitude), parseFloat(req.query.distance)) || [];
+    } else if (req.query.bidder) {
+      enlistments = await PropertyEnlistmentService.findWithOffersByBidder(req.query.bidder);
     } else {
       enlistments = await PropertyEnlistmentService.findAllReviewed();
     }

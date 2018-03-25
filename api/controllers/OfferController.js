@@ -17,9 +17,14 @@ module.exports = {
   },
 
   async getOffer(req, res) {
-    const offer = await PropertyEnlistmentService.getOffer(req.params.id, req.params.tenantEmail);
-
-    res.json(offer);
+    let offer;
+    try {
+      offer = await PropertyEnlistmentService.getOffer(req.params.id, req.params.tenantEmail);
+      res.json(offer);
+    } catch(error) {
+      log.info('Enlistment ' + req.params.id + ' has no offer from ' + req.params.tenantEmail);
+      res.status(404).send();
+    }
   },
 
   async cancelOffer(req, res) {

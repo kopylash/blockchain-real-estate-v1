@@ -1,6 +1,5 @@
 'use strict';
 
-const contractResponseMapper = require('./ContractResponseMapper');
 const Web3 = require('web3');
 const contract = require('truffle-contract');
 const log = require('../../server/logger');

@@ -4,6 +4,16 @@ const PropertyEnlistmentContractService = require('./PropertyEnlistmentContractS
 const Status = require('../models/enums/PropertyEnlistmentStatus');
 const log = require('../../server/logger');
 
+async function mapAllContractEnlistments(dbEnlistmentInstances) {
+  return Promise.all(dbEnlistmentInstances.map(async (instanceObj) => {
+    let dbEnlistment = instanceObj.get({ plain: true });
+
+    const contractEnlistment =
+      await PropertyEnlistmentContractService.getEnlistment(dbEnlistment.contractAddress);
+    return Object.assign({}, dbEnlistment, contractEnlistment);
+  }));
+}
+
 module.exports = {
   createEnlistment(enlistment) {
     enlistment.geolocation = {
@@ -34,13 +44,20 @@ module.exports = {
       }
     );
 
-    return Promise.all(dbEnlistments.map(async (instanceObj) => {
-      let dbEnlistment = instanceObj.get({ plain: true });
+    return mapAllContractEnlistments(dbEnlistments);
+  },
 
-      const contractEnlistment =
-        await PropertyEnlistmentContractService.getEnlistment(dbEnlistment.contractAddress);
-      return Object.assign({}, dbEnlistment, contractEnlistment);
-    }));
+  async findWithOffersByBidder(bidderEmail) {
+    const dbEnlistments = await Models.PropertyEnlistment.findAll(
+      {
+        where: {
+          offerAuthors: {
+            $contains: [bidderEmail]
+          }
+        }
+      }
+    );
+    return mapAllContractEnlistments(dbEnlistments);
   },
 
   async approveEnlistment(enlistmentId) {
@@ -85,7 +102,6 @@ module.exports = {
         id: enlistmentId
       }
     });
-    log.info('enlistment: ', enlistment.get({plain: true}));
     return Promise.all(enlistment.get({plain: true}).offerAuthors.map(async (offerAuthor) => {
       const contractOffer =
         await PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, offerAuthor);
@@ -100,7 +116,11 @@ module.exports = {
       }
     });
 
-    return PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, tenantEmail);
+    const contractOffer = await PropertyEnlistmentContractService.getOffer(enlistment.contractAddress, tenantEmail);
+    if (!contractOffer.initialized) {
+      throw new Error(404);
+    }
+    return contractOffer;
   },
 
   async cancelOffer(enlistmentId, tenantEmail) {

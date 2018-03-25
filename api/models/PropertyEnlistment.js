@@ -59,6 +59,12 @@ module.exports = (sequelize) => {
     this.offerAuthors = this.offerAuthors.concat(author);
   };
 
+  PropertyEnlistment.prototype.toJSON = function() {
+    let values = Object.assign({}, this.get());
+    delete values.offerAuthors; // internal use only
+    return values;
+  };
+
   PropertyEnlistment.findInArea = function(latitude, longitude, distance) {
     const query = `
     SELECT
