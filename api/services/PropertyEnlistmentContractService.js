@@ -99,11 +99,11 @@ module.exports = {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.reviewAgreement(tenantEmail, confirmed));
   },
 
-  landlordSignAgreement(contractAddress, tenantEmail, signatureHash) {
+  landlordSignAgreement(contractAddress, tenantEmail, signatureHash, fileReference) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.landlordSignAgreement(tenantEmail, signatureHash));
   },
 
-  tenantSignAgreement(contractAddress, tenantEmail, signatureHash) {
+  tenantSignAgreement(contractAddress, tenantEmail, signatureHash, fileReference) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.tenantSignAgreement(tenantEmail, signatureHash));
   },
 

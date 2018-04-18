@@ -17,6 +17,8 @@ module.exports = {
       log.error('DB connection error: ', error);
     });
 
+    require('./IPFSClient');
+
     const express = require('express'),
       app = express(),
       server = require('http').createServer(app);

@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Promise = require('bluebird');
+const log = require('./logger');
 
 module.exports = {
   getFolderFilesRecursivelyWithPath(folderPath) {
@@ -26,5 +26,19 @@ module.exports = {
 
   asyncMiddleware: (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
+  },
+
+  removeFile(path, cb) {
+    fs.unlink(path, (error) => {
+      if (error) {
+        log.error(`Cannnot delete file ${path}`, error);
+      } else {
+        log.verbose(`File ${path} successfully deleted`);
+      }
+
+      if (cb) {
+        cb();
+      }
+    });
   }
 };
