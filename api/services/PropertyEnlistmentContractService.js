@@ -15,8 +15,14 @@ PropertyEnlistmentContract.defaults({
   from: '0x627306090abaB3A6e1400e9345bC60c78a8BEf57',
   gas: 6000000,
   gasPrice: 1000000000
-
 });
+
+const offerStatusMap = {
+  0: 'PENDING',
+  1: 'REJECTED',
+  2: 'CANCELLED',
+  3: 'ACCEPTED'
+};
 
 module.exports = {
   createEnlistment(landlordName, streetName, floor, apartment, house, zipCode) {
@@ -35,7 +41,7 @@ module.exports = {
   getOffer(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.getOffer.call(tenantEmail))
     // TODO: convert BigNumber
-      .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, status}));
+      .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, offerStatusMap[status]}));
   },
 
   cancelOffer(contractAddress, tenantEmail) {
