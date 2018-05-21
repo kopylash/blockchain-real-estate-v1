@@ -24,6 +24,17 @@ const offerStatusMap = {
   3: 'ACCEPTED'
 };
 
+const agreementStatusMap = {
+  0: 'UNINITIALIZED',
+  1: 'PENDING',
+  2: 'REJECTED',
+  3: 'CONFIRMED',
+  4: 'CANCELLED',
+  5: 'LANDLORD_SIGNED',
+  6: 'TENANT_SIGNED',
+  7: 'COMPLETED'
+};
+
 module.exports = {
   createEnlistment(landlordName, streetName, floor, apartment, house, zipCode) {
     return PropertyEnlistmentContract.new(landlordName, streetName, floor, apartment, house, zipCode).then(contract => {
@@ -41,7 +52,8 @@ module.exports = {
   getOffer(contractAddress, tenantEmail) {
     return PropertyEnlistmentContract.at(contractAddress).then(contract => contract.getOffer.call(tenantEmail))
     // TODO: convert BigNumber
-      .then(([initialized, amount, tenantName, tenantEmail, status]) => ({initialized, amount, tenantName, tenantEmail, offerStatusMap[status]}));
+      .then(([initialized, amount, tenantName, tenantEmail, status]) =>
+        ({initialized, amount, tenantName, tenantEmail, status: offerStatusMap[status]}));
   },
 
   cancelOffer(contractAddress, tenantEmail) {
@@ -96,7 +108,7 @@ module.exports = {
         hash,
         landlordSignatureHash,
         tenantSignatureHash,
-        status
+        status: agreementStatusMap[status]
       };
     });
   },
