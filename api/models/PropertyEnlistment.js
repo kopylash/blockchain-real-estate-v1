@@ -61,6 +61,7 @@ module.exports = (sequelize) => {
     FROM
         "property_enlistments"
     WHERE
+        status = '${Status.APPROVED}' AND
         ST_Distance_Sphere(ST_MakePoint(:latitude, :longitude), "geolocation") < :maxDistance
     `;
 
