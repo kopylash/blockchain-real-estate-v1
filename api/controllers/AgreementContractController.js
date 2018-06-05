@@ -59,7 +59,7 @@ module.exports = {
           log.verbose('File stored in storage: ', fileReference);
           await PropertyEnlistmentService.signAgreement(req.params.id, body.tenantEmail, body.party, body.signatureHash, fileReference);
 
-          log.info(`Agreement signed by ${req.body.party}`);
+          log.info(`Agreement signed by ${body.party}`);
 
           res.status(200).send();
         } else {
